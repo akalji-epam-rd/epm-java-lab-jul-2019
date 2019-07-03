@@ -3,11 +3,11 @@ The EPAM students project
 
 
 ## Authors:
-Fedor Gluschenko
-Roman Abaev
-Kirill Grishin  
+- Fedor Gluschenko
+- Roman Abaev
+- Kirill Grishin  
   
 ## Mentors:
-Nikolai Tikhonov - Project Manager, Product Owner  
-Mariia Zemskova - Team Leader  
-Aleksandr Goloshchapov - Team Leader  
+- Nikolai Tikhonov - Project Manager, Product Owner  
+- Mariia Zemskova - Team Leader  
+- Aleksandr Goloshchapov - Team Leader  
