@@ -9,9 +9,8 @@ services:
 
 before_script:
   - chmod +x gradlew
-  before_script:
-    - psql -c 'create database travis_ci_test;' -U postgres
-    - cp ./database.yml.travis
+  - psql -U postgres -f src/main/sql/schema.sql
+  - mkdir config && cp .travis.database.yml config/database.yml
 
 script:
   - ./gradlew build --scan -s
