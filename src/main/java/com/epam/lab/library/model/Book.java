@@ -9,6 +9,7 @@ public class Book {
     private String name;
     private String description;
     private Set<Author> authors;
+    private Set<Item> items;
 
     // id?
 
@@ -36,6 +37,15 @@ public class Book {
 
     public Book setAuthors(Set<Author> authors) {
         this.authors = authors;
+        return this;
+    }
+
+    public Set<Item> getItems() {
+        return items;
+    }
+
+    public Book setItems(Set<Item> items) {
+        this.items = items;
         return this;
     }
 }
