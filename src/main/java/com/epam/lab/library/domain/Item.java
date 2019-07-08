@@ -1,4 +1,4 @@
-package com.epam.lab.library.model;
+package com.epam.lab.library.domain;
 
 import java.sql.Date;
 
@@ -9,6 +9,15 @@ public class Item {
     private User user;
     private Status status;
     private Date date;
+
+    public int getId() {
+        return id;
+    }
+
+    public Item setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public Book getBook() {
         return book;

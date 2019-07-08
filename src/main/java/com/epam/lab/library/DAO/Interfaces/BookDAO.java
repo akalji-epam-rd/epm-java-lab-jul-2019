@@ -1,17 +1,19 @@
 package com.epam.lab.library.DAO.Interfaces;
 
-import com.epam.lab.library.model.User;
+import com.epam.lab.library.domain.Book;
+
+import java.util.List;
 
 public interface BookDAO {
 
-    User getUser(int id);
+    Book getBook(int id);
 
-    User getUser(String name);
+    List<Book> getBooks(String name);
 
-    void save(User user);
+    void save(Book book);
 
-    void update(User user);
+    void update(Book book);
 
-    boolean delete(User user);
+    boolean delete(Book book);
 
 }

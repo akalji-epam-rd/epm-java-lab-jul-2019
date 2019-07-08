@@ -1,4 +1,4 @@
-package com.epam.lab.library.model;
+package com.epam.lab.library.domain;
 
 import java.util.Set;
 
@@ -9,7 +9,14 @@ public class Author {
     private String lastName;
     private Set<Book> books;
 
-    // id?
+    public int getId() {
+        return id;
+    }
+
+    public Author setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getName() {
         return name;

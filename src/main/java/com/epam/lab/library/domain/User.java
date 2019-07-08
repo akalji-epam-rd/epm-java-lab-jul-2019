@@ -1,4 +1,4 @@
-package com.epam.lab.library.model;
+package com.epam.lab.library.domain;
 
 import java.util.Set;
 
@@ -11,6 +11,15 @@ public class User {
     private String lastName;
     private Set<Role> roles;
     private Set<Item> items;
+
+    public int getId() {
+        return id;
+    }
+
+    public User setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getEmail() {
         return email;

@@ -54,14 +54,14 @@ public class ConnectionPool {
         availableConnections = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < CAPACITY; i++) {
             try {
-                availableConnections.add(getConnection(url, user, password));
+                availableConnections.add(createConnection(url, user, password));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private Connection getConnection(String url, String user, String password) throws SQLException {
+    private Connection createConnection(String url, String user, String password) throws SQLException {
 
         return DriverManager.getConnection(
                 url,
@@ -75,10 +75,10 @@ public class ConnectionPool {
      *
      * @return Connection
      */
-    public Connection retrieveConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
 
         if (availableConnections.isEmpty()) {
-            return getConnection(url, user, password);
+            return createConnection(url, user, password);
         }
 
         Connection connection = availableConnections.poll();
