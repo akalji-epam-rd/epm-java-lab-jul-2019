@@ -10,7 +10,6 @@ public class User {
     private String name;
     private String lastName;
     private Set<Role> roles;
-    private Set<Item> items;
 
     public Integer getId() {
         return id;
@@ -63,15 +62,6 @@ public class User {
 
     public User setRoles(Set<Role> roles) {
         this.roles = roles;
-        return this;
-    }
-
-    public Set<Item> getItems() {
-        return items;
-    }
-
-    public User setItems(Set<Item> items) {
-        this.items = items;
         return this;
     }
 }
