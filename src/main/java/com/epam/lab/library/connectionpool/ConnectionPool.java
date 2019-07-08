@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class ConnectionPool implements AutoCloseable{
+public class ConnectionPool {
 
     private static final int CAPACITY = 10;
 
@@ -23,32 +23,34 @@ public class ConnectionPool implements AutoCloseable{
 
     public static ConnectionPool getInstance() {
 
-        try (FileInputStream fis = new FileInputStream("src/main/resources/db.properties")) {
-            Properties property = new Properties();
-            property.load(fis);
-
-            url = property.getProperty("db.url");
-            user = property.getProperty("db.user");
-            password = property.getProperty("db.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        availableConnections = new ArrayList<>();
-        for (int i = 0; i < CAPACITY; i++) {
-            try {
-                availableConnections.add(createConnection(url, user, password));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
         ConnectionPool localInstance = instance;
         if (localInstance == null) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new ConnectionPool();
+
+            try (FileInputStream fis = new FileInputStream("src/main/resources/db.properties")) {
+                Properties property = new Properties();
+                property.load(fis);
+
+                url = property.getProperty("db.url");
+                user = property.getProperty("db.user");
+                password = property.getProperty("db.password");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            availableConnections = new ArrayList<>();
+            for (int i = 0; i < CAPACITY; i++) {
+                try {
+                    availableConnections.add(createConnection(url, user, password));
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+            }
+
+
+            localInstance = instance;
+            if (localInstance == null) {
+                instance = localInstance = new ConnectionPool();
+            }
         }
         return localInstance;
     }
@@ -84,6 +86,7 @@ public class ConnectionPool implements AutoCloseable{
 
     /**
      * return connection in pool if pool isn't fill up
+     *
      * @param connection
      */
     public synchronized void releaseConnection(Connection connection) {
@@ -104,14 +107,10 @@ public class ConnectionPool implements AutoCloseable{
 
     /**
      * return size of connection pool
+     *
      * @return
      */
     public int getSize() {
         return availableConnections.size();
-    }
-
-    @Override
-    public void close() throws Exception {
-
     }
 }
