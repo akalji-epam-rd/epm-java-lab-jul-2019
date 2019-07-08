@@ -1,4 +1,6 @@
 test:
   adapter: postgresql
-  database: travis_ci_test
+  database: library
   encoding: utf8
+  user: postgres
+  password: admin
