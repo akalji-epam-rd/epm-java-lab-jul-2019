@@ -1,4 +1,4 @@
-package com.epam.lab.library.dao.interfaces;
+package com.epam.lab.library.dao.Interfaces;
 
 import com.epam.lab.library.domain.Book;
 

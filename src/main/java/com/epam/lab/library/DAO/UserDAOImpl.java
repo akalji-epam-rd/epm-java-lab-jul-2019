@@ -1,9 +1,8 @@
 package com.epam.lab.library.dao;
 
-
 import com.epam.lab.library.connectionpool.ConnectionPool;
-import com.epam.lab.library.dao.Interfaces.BookDao;
-import com.epam.lab.library.domain.Book;
+import com.epam.lab.library.dao.Interfaces.UserDao;
+import com.epam.lab.library.domain.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,12 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BookDaoImpl implements BookDao {
+public class UserDaoImpl implements UserDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
     @Override
-    public Book getById(int id) {
+    public User get(int id) {
 
         Connection connection = null;
         try {
@@ -31,7 +30,7 @@ public class BookDaoImpl implements BookDao {
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
             if (true) {
-                Book book = new Book();
+                User user = new User();
                 book.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"))
                         .setDescription(resultSet.getString("description"));
@@ -49,23 +48,23 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public List<Book> getAllByName(String name) {
+    public List<User> getAll() {
         return null;
     }
 
-    @Override
-    public Integer save(Book book) {
-        return null;
-    }
 
     @Override
-    public void update(Book book) {
+    public void save(User user) {
 
     }
 
     @Override
-    public boolean delete(Book book) {
-        return false;
+    public void update(User user) {
+
     }
 
+    @Override
+    public void delete(int id) {
+
+    }
 }

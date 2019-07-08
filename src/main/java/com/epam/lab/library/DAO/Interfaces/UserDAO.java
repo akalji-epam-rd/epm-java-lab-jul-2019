@@ -1,16 +1,15 @@
-package com.epam.lab.library.DAO.Interfaces;
+package com.epam.lab.library.dao.Interfaces;
 
-import com.epam.lab.library.model.User;
+
+import com.epam.lab.library.domain.User;
 
 import java.util.List;
 
-public interface UserDAO {
+public interface UserDao {
 
     User get(int id);
 
-    List<User> getALL();
-
-    List<User> getALL(String filter);
+    List<User> getAll();
 
     void save(User user);
 
