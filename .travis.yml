@@ -9,6 +9,8 @@ services:
 
 before_script:
   - chmod +x gradlew
+  - psql -c 'create database library;' -U postgres
+  - psql -c 'create schema library;' -U postgres
   - psql -U postgres -f src/main/sql/schema.sql
   - mkdir config && cp .travis.database.yml config/database.yml
 
