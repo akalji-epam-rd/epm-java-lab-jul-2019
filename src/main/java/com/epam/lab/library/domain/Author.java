@@ -4,16 +4,16 @@ import java.util.Set;
 
 public class Author {
 
-    private int id;
+    private Integer id;
     private String name;
     private String lastName;
     private Set<Book> books;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public Author setId(int id) {
+    public Author setId(Integer id) {
         this.id = id;
         return this;
     }

@@ -4,17 +4,17 @@ import java.sql.Date;
 
 public class Item {
 
-    private int id;
+    private Integer id;
     private Book book;
     private User user;
     private Status status;
     private Date date;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public Item setId(int id) {
+    public Item setId(Integer id) {
         this.id = id;
         return this;
     }

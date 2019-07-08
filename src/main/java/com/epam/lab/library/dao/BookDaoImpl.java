@@ -1,9 +1,8 @@
-package com.epam.lab.library.DAO.Implementations;
+package com.epam.lab.library.dao;
 
-import com.epam.lab.library.DAO.Interfaces.BookDAO;
+import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.connectionpool.ConnectionPool;
 import com.epam.lab.library.domain.Book;
-import com.epam.lab.library.domain.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,21 +10,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BookDAOImpl implements BookDAO {
+public class BookDaoImpl implements BookDao {
 
-    ConnectionPool pool = ConnectionPool.getInstance();
+    private ConnectionPool pool = ConnectionPool.getInstance();
 
     @Override
-    public Book getBook(int id) {
+    public Book getById(int id) {
 
         Connection connection = null;
         try {
-
             connection = pool.getConnection();
-            String query = "SELECT * FROM books " +
+
+            String query = "SELECT books.id books.name books.description FROM books " +
                     "INNER JOIN authors_books ON books.id = authors_books.book_id " +
                     "INNER JOIN authors ON authors_books.author_id = authors.id " +
-                    "INNER JOIN items ON books.id = items.book_id " +
                     "WHERE books.id=" + id;
 
             PreparedStatement statement = connection.prepareStatement(query);
@@ -36,7 +34,6 @@ public class BookDAOImpl implements BookDAO {
                 book.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"))
                         .setDescription(resultSet.getString("description"));
-                System.out.println(resultSet.getInt("id"));
                 return book;
             } else {
                 return null;
@@ -51,13 +48,13 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public List<Book> getBooks(String name) {
+    public List<Book> getAllByName(String name) {
         return null;
     }
 
     @Override
-    public void save(Book book) {
-
+    public Integer save(Book book) {
+        return null;
     }
 
     @Override

@@ -5,17 +5,16 @@ import java.util.Set;
 
 public class Book {
 
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private Set<Author> authors;
-    private Set<Item> items;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public Book setId(int id) {
+    public Book setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -44,15 +43,6 @@ public class Book {
 
     public Book setAuthors(Set<Author> authors) {
         this.authors = authors;
-        return this;
-    }
-
-    public Set<Item> getItems() {
-        return items;
-    }
-
-    public Book setItems(Set<Item> items) {
-        this.items = items;
         return this;
     }
 }
