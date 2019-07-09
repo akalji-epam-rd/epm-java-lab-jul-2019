@@ -23,3 +23,9 @@ dependencies {
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
 }
 
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+

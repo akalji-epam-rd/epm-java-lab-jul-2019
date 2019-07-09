@@ -56,13 +56,6 @@ public class StatusesDaoImplTest {
         List<Status> statusListActual = new ArrayList<>();
         Statement statement = conn.createStatement();
 
-        try {
-            ResultSet rs = statement.executeQuery("SELECT * FROM library.statuses");
-        } catch (PSQLException e) {
-            e.printStackTrace();
-            System.out.println("message: " + e.getMessage());
-        }
-
         ResultSet rs = statement.executeQuery("SELECT * FROM library.statuses");
         while (rs.next()) {
             Status status = new Status();
