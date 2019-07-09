@@ -11,11 +11,11 @@ public interface RoleDao {
 
     List<Role> getAll();
 
-    void save(Role role);
+    int save(Role role);
 
-    void update(Role role);
+    int update(Role role);
 
-    void delete(int id);
+    int delete(int id);
 
 
 }
