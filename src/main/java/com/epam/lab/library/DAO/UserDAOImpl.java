@@ -4,6 +4,7 @@ import com.epam.lab.library.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.Interfaces.UserDao;
 import com.epam.lab.library.domain.User;
 
+import javax.swing.text.html.parser.Entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,20 +22,22 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT books.id books.name books.description FROM books " +
-                    "INNER JOIN authors_books ON books.id = authors_books.book_id " +
-                    "INNER JOIN authors ON authors_books.author_id = authors.id " +
-                    "WHERE books.id=" + id;
+            String query = "SELECT users.id users.name users.lastname users.email users.password FROM users " +
+                    "LEFT JOIN users_roles ON users.id = users_roles.user_id " +
+                    "LEFT JOIN roles ON users_roles.role_id = roles.id " +
+                    "WHERE roles.id=" + id ;
+
 
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            if (true) {
+            if (resultSet.next()) {
                 User user = new User();
-                book.setId(resultSet.getInt("id"))
+                user.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"))
-                        .setDescription(resultSet.getString("description"));
-                return book;
+                        .setLastName(resultSet.getString("lastname"))
+                        .setEmail(resultSet.getString("email"))
+                        .setPassword(resultSet.getString("password"));
+                return user;
             } else {
                 return null;
             }
