@@ -1,4 +1,4 @@
-package com.epam.lab.library.dao;
+package com.epam.lab.library.DAO;
 
 import com.epam.lab.library.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.Interfaces.RoleDao;
@@ -76,7 +76,6 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public int save(Role role) {
         Connection connection = null;
-
         String name = role.getName();
 
         try {
@@ -108,6 +107,21 @@ public class RoleDaoImpl implements RoleDao {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.executeQuery();
 
+
+            query = "SELECT library.roles.id FROM library.roles WHERE name = " + name;
+            statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+
+                return resultSet.getInt("id");
+            } else {
+                return 0;
+
+                //TODO What to give back if no update?
+            }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -137,7 +151,7 @@ public class RoleDaoImpl implements RoleDao {
                     statement.executeQuery();
                 }
             } else {
-                return id;
+                return id; //TODO Return id anyway?
             }
 
 

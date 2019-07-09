@@ -1,4 +1,4 @@
-package com.epam.lab.library.dao.Interfaces;
+package com.epam.lab.library.DAO.Interfaces;
 
 
 import com.epam.lab.library.domain.User;
