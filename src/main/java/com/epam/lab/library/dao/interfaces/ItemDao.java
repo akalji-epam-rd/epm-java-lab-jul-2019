@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ItemDao {
 
-    Integer save(Item i) throws SQLException;
+    Integer save(Item item) throws SQLException;
 
-    Integer update(Item i) throws SQLException;
+    Integer update(Item item) throws SQLException;
 
-    Integer delete(Item i) throws SQLException;
+    boolean delete(Item item) throws SQLException;
 
     List<Item> getAll() throws SQLException;
 
