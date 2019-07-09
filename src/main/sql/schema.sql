@@ -1,4 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS library;
+CREATE SCHEMA library;
 
 CREATE TABLE library.users (
 	id SERIAL,
@@ -126,3 +126,5 @@ WITH (oids = false);
 
 ALTER TABLE library.items
 	OWNER TO postgres;
+
+
