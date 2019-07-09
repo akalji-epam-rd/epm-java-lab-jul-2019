@@ -12,6 +12,10 @@ before_script:
   - psql -c 'create database library;' -U postgres
   - psql -c 'create schema library;' -U postgres
   - psql -U postgres -f src/main/sql/schema.sql
+  - psql -U postgres -f src/main/sql/insert_into_books.sql
+  - psql -U postgres -f src/main/sql/insert_into_users.sql
+  - psql -U postgres -f src/main/sql/insert_into_statuses.sql
+  - psql -U postgres -f src/main/sql/insert_into_items.sql
   - mkdir config && cp .travis.database.yml config/database.yml
 
 script:
