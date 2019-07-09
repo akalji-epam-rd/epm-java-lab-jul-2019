@@ -10,8 +10,6 @@ public interface BookDao {
 
     Book getById(int id);
 
-    List<Book> getAllByName(String name);
-
     Integer save(Book book);
 
     void update(Book book);
