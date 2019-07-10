@@ -1,4 +1,4 @@
-package com.epam.lab.library.dao.Interfaces;
+package com.epam.lab.library.dao.interfaces;
 
 
 import com.epam.lab.library.domain.Role;
@@ -11,11 +11,11 @@ public interface RoleDao {
 
     List<Role> getAll();
 
-    int save(Role role);
+    Integer save(Role role);
 
-    int update(Role role);
+    Integer update(Role role);
 
-    int delete(int id);
+    boolean delete(int id);
 
 
 }

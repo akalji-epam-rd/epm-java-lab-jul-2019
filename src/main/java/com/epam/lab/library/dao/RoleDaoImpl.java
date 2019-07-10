@@ -1,7 +1,7 @@
-package com.epam.lab.library.DAO;
+package com.epam.lab.library.dao;
 
 import com.epam.lab.library.connectionpool.ConnectionPool;
-import com.epam.lab.library.dao.Interfaces.RoleDao;
+import com.epam.lab.library.dao.interfaces.RoleDao;
 import com.epam.lab.library.domain.Role;
 
 import java.sql.Connection;
@@ -15,16 +15,27 @@ public class RoleDaoImpl implements RoleDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
+    private String selectSql = "SELECT roles.id, roles.name FROM library.roles WHERE roles.id = ?";
+    private String selectAllSql = "SELECT * FROM library.roles ";
+    private String insertSql = "INSERT INTO library.roles (name) VALUES (?);";
+    private String selectIdSql = "SELECT id FROM library.roles WHERE name =?;";
+    private String updateSql = "INSERT INTO library.roles (id, name) VALUES (?,?);";
+    private String existSql = "EXISTS(SELECT role_id FROM library.user_roles WHERE role_id = ?);";
+    private String deleteSql = "DELETE from library.roles WHERE id = ?;";
+
+    /**
+     * Method return role object
+     * @param id Role id
+     * @return Role object
+     * */
     @Override
     public Role get(int id) {
         Connection connection = null;
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT roles.id roles.name FROM library.roles " +
-                    "WHERE roles.id=" + id;
-
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(selectSql);
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Role role = new Role();
@@ -50,9 +61,7 @@ public class RoleDaoImpl implements RoleDao {
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT * FROM library.roles ";
-
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(selectAllSql);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -74,16 +83,39 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public int save(Role role) {
+    public Integer save(Role role) {
         Connection connection = null;
         String name = role.getName();
 
         try {
             connection = pool.getConnection();
 
-            String query = "INSERT INTO library.roles (name) VALUES (" + name + ");";
+            PreparedStatement statement = connection.prepareStatement(insertSql);
+            statement.setString(1, name);
+            statement.executeQuery();
 
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(selectIdSql);
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.getInt("id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return role.getId();
+    }
+
+    @Override
+    public Integer update(Role role) {
+        Connection connection = null;
+
+        try {
+            connection = pool.getConnection();
+
+            PreparedStatement statement = connection.prepareStatement(updateSql);
+            statement.setInt(1, role.getId());
+            statement.setString(2, role.getName());
             statement.executeQuery();
 
         } catch (SQLException e) {
@@ -95,71 +127,28 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public int update(Role role) {
+    public boolean delete(int id) {
         Connection connection = null;
-        String name = role.getName();
-
         try {
             connection = pool.getConnection();
 
-            String query = "INSERT INTO library.roles (name) VALUES (" + name + ");";
-
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.executeQuery();
-
-
-            query = "SELECT library.roles.id FROM library.roles WHERE name = " + name;
-            statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(existSql);
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
+            String result = resultSet.getString("exist");
 
-                return resultSet.getInt("id");
-            } else {
-                return 0;
-
-                //TODO What to give back if no update?
+            if (!result.equals("true")) {
+                statement = connection.prepareStatement(deleteSql);
+                statement.setInt(1, id);
+                statement.executeQuery();
+                return true;
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             pool.releaseConnection(connection);
         }
-        return role.getId();
-    }
-
-    @Override
-    public int delete(int id) {
-        Connection connection = null;
-        try {
-            connection = pool.getConnection();
-
-            String query = "SELECT EXISTS(SELECT role_id FROM library.user_roles WHERE role_id = " + id + ");";
-
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                String result = resultSet.getString("exist");
-
-                if (result.equals("true")) return id;
-                else {
-                    query = "DELETE from library.roles WHERE id = " + id + ";";
-                    statement = connection.prepareStatement(query);
-                    statement.executeQuery();
-                }
-            } else {
-                return id; //TODO Return id anyway?
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            pool.releaseConnection(connection);
-        }
-        return id;
+        return false;
     }
 }

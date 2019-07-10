@@ -1,6 +1,6 @@
-package com.epam.lab.library.DAO;
+package com.epam.lab.library.dao;
 
-import com.epam.lab.library.DAO.Interfaces.UserDao;
+import com.epam.lab.library.dao.interfaces.UserDao;
 import com.epam.lab.library.connectionpool.ConnectionPool;
 
 import com.epam.lab.library.domain.User;
