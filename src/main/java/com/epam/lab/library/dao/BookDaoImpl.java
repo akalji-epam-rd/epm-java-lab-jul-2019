@@ -229,6 +229,7 @@ public class BookDaoImpl implements BookDao {
 
         try {
             connection = pool.getConnection();
+            connection.setAutoCommit(true);
 
             String query = "DELETE FROM library.books";
             PreparedStatement statement = connection.prepareStatement(query);
