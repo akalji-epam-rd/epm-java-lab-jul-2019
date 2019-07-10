@@ -1,6 +1,8 @@
 package com.epam.lab.library.domain;
 
-import java.sql.Date;
+
+import java.util.Date;
+import java.util.Objects;
 
 public class Item {
 
@@ -10,48 +12,72 @@ public class Item {
     private Status status;
     private Date date;
 
+    public Item() {
+    }
+
     public Integer getId() {
         return id;
     }
 
-    public Item setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
-        return this;
     }
 
     public Book getBook() {
         return book;
     }
 
-    public Item setBook(Book book) {
+    public void setBook(Book book) {
         this.book = book;
-        return this;
     }
 
     public User getUser() {
         return user;
     }
 
-    public Item setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
-        return this;
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public Item setStatus(Status status) {
+    public void setStatus(Status status) {
         this.status = status;
-        return this;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public Item setDate(Date date) {
+    public void setDate(Date date) {
         this.date = date;
-        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Item item = (Item) o;
+        return Objects.equals(id, item.id) &&
+                book.equals(item.book) &&
+                user.equals(item.user) &&
+                status.equals(item.status);
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", book=" + book +
+                ", user=" + user +
+                ", status=" + status +
+                ", date=" + date +
+                '}';
     }
 }
