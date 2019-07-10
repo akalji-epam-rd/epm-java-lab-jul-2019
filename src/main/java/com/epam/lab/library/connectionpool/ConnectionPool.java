@@ -6,30 +6,50 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConnectionPool {
 
     private static final int CAPACITY = 10;
 
-    private ConcurrentLinkedQueue<Connection> availableConnections;
-    private Vector<Connection> usedConnections;
-    private String url = null;
-    private String user = null;
-    private String password = null;
+    private static List<Connection> availableConnections;
+    private static String url = null;
+    private static String user = null;
+    private static String password = null;
 
-    private static volatile ConnectionPool instance;
+    private static ConnectionPool instance;
 
     public static ConnectionPool getInstance() {
+
         ConnectionPool localInstance = instance;
         if (localInstance == null) {
-            synchronized (ConnectionPool.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new ConnectionPool();
+
+            try (FileInputStream fis = new FileInputStream("src/main/resources/db.properties")) {
+                Properties property = new Properties();
+                property.load(fis);
+
+                url = property.getProperty("db.url");
+                user = property.getProperty("db.user");
+                password = property.getProperty("db.password");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            availableConnections = new ArrayList<>();
+            for (int i = 0; i < CAPACITY; i++) {
+                try {
+                    availableConnections.add(createConnection(url, user, password));
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+            }
+
+
+            localInstance = instance;
+            if (localInstance == null) {
+                instance = localInstance = new ConnectionPool();
             }
         }
         return localInstance;
@@ -38,30 +58,7 @@ public class ConnectionPool {
     private ConnectionPool() {
     }
 
-    {
-        try (FileInputStream fis = new FileInputStream("src/main/resources/db.properties")) {
-            Properties property = new Properties();
-            property.load(fis);
-
-            url = property.getProperty("db.url");
-            user = property.getProperty("db.user");
-            password = property.getProperty("db.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        usedConnections = new Vector<>();
-        availableConnections = new ConcurrentLinkedQueue<>();
-        for (int i = 0; i < CAPACITY; i++) {
-            try {
-                availableConnections.add(createConnection(url, user, password));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private Connection createConnection(String url, String user, String password) throws SQLException {
+    private static Connection createConnection(String url, String user, String password) throws SQLException {
 
         return DriverManager.getConnection(
                 url,
@@ -75,25 +72,28 @@ public class ConnectionPool {
      *
      * @return Connection
      */
-    public Connection getConnection() throws SQLException {
+    public synchronized Connection getConnection() throws SQLException {
 
         if (availableConnections.isEmpty()) {
             return createConnection(url, user, password);
         }
 
-        Connection connection = availableConnections.poll();
-        usedConnections.add(connection);
+        Connection connection = availableConnections.get(0);
+        availableConnections.remove(connection);
+
         return connection;
     }
 
     /**
      * return connection in pool if pool isn't fill up
+     *
      * @param connection
      */
-    public void releaseConnection(Connection connection) {
+    public synchronized void releaseConnection(Connection connection) {
 
-        usedConnections.remove(connection);
-
+        if (connection == null) {
+            throw new NullPointerException();
+        }
         if (availableConnections.size() < CAPACITY) {
             availableConnections.add(connection);
         } else {
@@ -105,9 +105,12 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * return size of connection pool
+     *
+     * @return
+     */
     public int getSize() {
-        return availableConnections.size() + usedConnections.size();
+        return availableConnections.size();
     }
-
-
 }
