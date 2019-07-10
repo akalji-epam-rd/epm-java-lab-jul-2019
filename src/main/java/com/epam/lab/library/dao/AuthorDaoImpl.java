@@ -1,48 +1,44 @@
 package com.epam.lab.library.dao;
 
 import com.epam.lab.library.connectionpool.ConnectionPool;
-import com.epam.lab.library.dao.interfaces.BookDao;
+import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BookDaoImpl implements BookDao {
+public class AuthorDaoImpl implements AuthorDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
     /**
      *
-     * @return list of all books from database
+     * @return list of all authors from database
      */
     @Override
-    public List<Book> getAll() {
-
+    public List<Author> getAll() {
         Connection connection = null;
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT * FROM library.books";
+            String query = "SELECT * FROM library.authors";
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
-            List<Book> books = new ArrayList<>();
+            List<Author> authors = new ArrayList<>();
             while (resultSet.next()) {
-                Book book = new Book();
-                book.setId(resultSet.getInt("id"))
+                Author author = new Author();
+                author.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"))
-                        .setDescription(resultSet.getString("description"));
-                books.add(book);
+                        .setLastName(resultSet.getString("lastname"));
+                authors.add(author);
             }
-            return books;
+            return authors;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,21 +51,21 @@ public class BookDaoImpl implements BookDao {
 
     /**
      *
-     * @param id - identifier of book in database
+     * @param id - identifier of author in database
      * @return Book with given id from database
      */
     @Override
-    public Book getById(int id) {
+    public Author getById(int id) {
 
         Connection connection = null;
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
-                    "FROM library.books " +
-                    "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
-                    "LEFT JOIN library.authors ON authors_books.author_id = authors.id " +
-                    "WHERE books.id=" + id;
+            String query = "SELECT authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname, books.id as b_id, books.name as b_name, description as b_description " +
+                    "FROM library.authors " +
+                    "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
+                    "LEFT JOIN library.books ON authors_books.book_id = books.id " +
+                    "WHERE authors.id=" + id;
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -78,24 +74,24 @@ public class BookDaoImpl implements BookDao {
                 return null;
             }
 
-            Book book = new Book();
-            book.setId(resultSet.getInt("b_id"))
-                    .setName(resultSet.getString("b_name"))
-                    .setDescription(resultSet.getString("b_description"));
+            Author author = new Author();
+            author.setId(resultSet.getInt("a_id"))
+                    .setName(resultSet.getString("a_name"))
+                    .setLastName(resultSet.getString("a_lastname"));
 
-            Set<Author> authors = new HashSet<>();
+            Set<Book> books = new HashSet<>();
             do {
-                Author author = new Author();
-                author.setId(resultSet.getInt("a_id"))
-                        .setName(resultSet.getString("a_name"))
-                        .setLastName(resultSet.getString("a_lastname"));
+                Book book = new Book();
+                book.setId(resultSet.getInt("b_id"))
+                        .setName(resultSet.getString("b_name"))
+                        .setDescription(resultSet.getString("b_description"));
 
-                authors.add(author);
+                books.add(book);
             } while (resultSet.next());
             resultSet.close();
-            book.setAuthors(authors);
+            author.setBooks(books);
 
-            return book;
+            return author;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,12 +103,12 @@ public class BookDaoImpl implements BookDao {
     }
 
     /**
-     * Saves given book in database
-     * @param book domain model for saving
-     * @return id of saved book
+     * Saves given author in database
+     * @param author domain model for saving
+     * @return id of saved author
      */
     @Override
-    public Integer save(Book book) {
+    public Integer save(Author author) {
 
         Connection connection = null;
 
@@ -120,8 +116,8 @@ public class BookDaoImpl implements BookDao {
             connection = pool.getConnection();
             connection.setAutoCommit(false);
 
-            String query = "INSERT INTO library.books(name, description) " +
-                    "VALUES('" + book.getName() + "', '" + book.getDescription() + "') " +
+            String query = "INSERT INTO library.authors(name, lastname) " +
+                    "VALUES('" + author.getName() + "', '" + author.getLastName() + "') " +
                     "RETURNING id";
 
             Statement statement = connection.createStatement();
@@ -147,12 +143,12 @@ public class BookDaoImpl implements BookDao {
     }
 
     /**
-     * Updates given book
-     * @param book domain model for updating
-     * @return id of saved book if exists or null if not exist
+     * Updates given author
+     * @param author domain model for updating
+     * @return id of saved author if exists or null if not exist
      */
     @Override
-    public Integer update(Book book) {
+    public Integer update(Author author) {
 
         Connection connection = null;
 
@@ -160,8 +156,8 @@ public class BookDaoImpl implements BookDao {
             connection = pool.getConnection();
             connection.setAutoCommit(false);
 
-            String query = "UPDATE library.books SET name='" + book.getName() + "', description='" + book.getDescription() + "' " +
-                    "WHERE id=" + book.getId() + " " +
+            String query = "UPDATE library.authors SET name='" + author.getName() + "', lastname='" + author.getLastName() + "' " +
+                    "WHERE id=" + author.getId() + " " +
                     "RETURNING id";
 
             Statement statement = connection.createStatement();
@@ -187,12 +183,12 @@ public class BookDaoImpl implements BookDao {
     }
 
     /**
-     * Deletes given book from database
-     * @param book domain model for deleting
-     * @return true if book have been deleted of false if not
+     * Deletes given author from database
+     * @param author domain model for deleting
+     * @return true if author have been deleted of false if not
      */
     @Override
-    public boolean delete(Book book) {
+    public boolean delete(Author author) {
 
         Connection connection = null;
 
@@ -200,8 +196,8 @@ public class BookDaoImpl implements BookDao {
             connection = pool.getConnection();
             connection.setAutoCommit(false);
 
-            String query = "DELETE FROM library.books " +
-                    "WHERE id=" + book.getId() + " " +
+            String query = "DELETE FROM library.authors " +
+                    "WHERE id=" + author.getId() + " " +
                     "RETURNING id";
 
             Statement statement = connection.createStatement();
@@ -237,7 +233,7 @@ public class BookDaoImpl implements BookDao {
             connection = pool.getConnection();
             connection.setAutoCommit(true);
 
-            String query = "DELETE FROM library.books";
+            String query = "DELETE FROM library.authors";
 
             Statement statement = connection.createStatement();
             statement.execute(query);
