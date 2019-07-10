@@ -1,7 +1,6 @@
 package com.epam.lab.library.domain;
 
-
-import java.util.Objects;
+import java.util.Set;
 
 public class User {
 
@@ -9,79 +8,60 @@ public class User {
     private String email;
     private String password;
     private String name;
-    private String lastname;
-
-    public User() {
-    }
-
-    public User(Integer id) {
-        this.id = id;
-    }
+    private String lastName;
+    private Set<Role> roles;
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public User setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public User setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public User setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public User setLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                email.equals(user.email) &&
-                password.equals(user.password) &&
-                name.equals(user.name) &&
-                lastname.equals(user.lastname);
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                '}';
+    public User setRoles(Set<Role> roles) {
+        this.roles = roles;
+        return this;
     }
 }

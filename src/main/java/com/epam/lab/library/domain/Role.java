@@ -2,7 +2,7 @@ package com.epam.lab.library.domain;
 
 import java.util.Set;
 
-public class Status {
+public class Role {
 
     private Integer id;
     private String name;
@@ -11,7 +11,7 @@ public class Status {
         return id;
     }
 
-    public Status setId(Integer id) {
+    public Role setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -20,7 +20,7 @@ public class Status {
         return name;
     }
 
-    public Status setName(String name) {
+    public Role setName(String name) {
         this.name = name;
         return this;
     }
