@@ -1,6 +1,5 @@
 package com.epam.lab.library.domain;
 
-import java.util.Set;
 
 public class Role {
 

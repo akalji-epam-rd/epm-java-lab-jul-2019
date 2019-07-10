@@ -25,18 +25,18 @@ public class RoleDaoImpl implements RoleDao {
 
     /**
      * Method return role object
+     *
      * @param id Role id
      * @return Role object
-     * */
+     */
     @Override
-    public Role get(int id) {
-        Connection connection = null;
-        try {
-            connection = pool.getConnection();
+    public Role getById(int id) throws SQLException {
+        Connection connection = pool.getConnection();
+        PreparedStatement statement = connection.prepareStatement(selectSql);
+        statement.setInt(1, id);
 
-            PreparedStatement statement = connection.prepareStatement(selectSql);
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+        try (ResultSet resultSet = statement.executeQuery()) {
+
             if (resultSet.next()) {
                 Role role = new Role();
                 role.setId(resultSet.getInt("id"))
@@ -54,15 +54,18 @@ public class RoleDaoImpl implements RoleDao {
         return null;
     }
 
+    /**
+     * Method returns collection of roles
+     *
+     * @return roles collection
+     */
     @Override
-    public List<Role> getAll() {
-        Connection connection = null;
-        List<Role> list = new ArrayList<>();
-        try {
-            connection = pool.getConnection();
+    public List<Role> getAll() throws SQLException {
+        Connection connection = pool.getConnection();
+        PreparedStatement statement = connection.prepareStatement(selectAllSql);
 
-            PreparedStatement statement = connection.prepareStatement(selectAllSql);
-            ResultSet resultSet = statement.executeQuery();
+        List<Role> list = new ArrayList<>();
+        try (ResultSet resultSet = statement.executeQuery()){
 
             while (resultSet.next()) {
                 Role role = new Role();
@@ -82,6 +85,12 @@ public class RoleDaoImpl implements RoleDao {
         return null;
     }
 
+    /**
+     * Method save role to DB
+     *
+     * @param role Role for saving
+     * @return id of saved role
+     */
     @Override
     public Integer save(Role role) {
         Connection connection = null;
@@ -106,6 +115,12 @@ public class RoleDaoImpl implements RoleDao {
         return role.getId();
     }
 
+    /**
+     * Method updates role with current id
+     *
+     * @param role Role object to update
+     * @return id of updated role
+     */
     @Override
     public Integer update(Role role) {
         Connection connection = null;
@@ -126,6 +141,12 @@ public class RoleDaoImpl implements RoleDao {
         return role.getId();
     }
 
+    /**
+     * Method deletes record with current id in DB
+     *
+     * @param id ID of record to delete
+     * @return Delete result
+     */
     @Override
     public boolean delete(int id) {
         Connection connection = null;

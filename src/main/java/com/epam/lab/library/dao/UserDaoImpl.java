@@ -15,6 +15,17 @@ public class UserDaoImpl implements UserDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
+    private String selectSql = "SELECT users.id, users.name, users.lastname, users.email, users.password, roles.name FROM library.users " +
+            "LEFT JOIN library.users_roles ON library.users.id = library.users_roles.user_id " +
+            "LEFT JOIN library.roles ON library.users_roles.role_id = library.roles.id " +
+            "WHERE library.users.id = ?;";
+
+
+    /**
+     * Method return user object
+     * @param id User id
+     * @return User object
+     * */
     @Override
     public User get(int id) {
 
@@ -22,12 +33,8 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT users.id, users.name, users.lastname, users.email, users.password, roles.name FROM library.users " +
-                    "LEFT JOIN library.users_roles ON library.users.id = library.users_roles.user_id " +
-                    "LEFT JOIN library.roles ON library.users_roles.role_id = library.roles.id " +
-                    "WHERE library.users.id = " + id + ";";
-
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(selectSql);
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -37,13 +44,10 @@ public class UserDaoImpl implements UserDao {
                         .setLastName(resultSet.getString("lastname"))
                         .setEmail(resultSet.getString("email"))
                         .setPassword(resultSet.getString("password"));
-
                 return user;
-
             } else {
                 return null;
             }
-
 
         } catch (SQLException e) {
             e.printStackTrace();

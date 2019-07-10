@@ -3,13 +3,14 @@ package com.epam.lab.library.dao.interfaces;
 
 import com.epam.lab.library.domain.Role;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface RoleDao {
 
-    Role get(int id);
+    Role getById(int id) throws SQLException;
 
-    List<Role> getAll();
+    List<Role> getAll() throws SQLException;
 
     Integer save(Role role);
 
