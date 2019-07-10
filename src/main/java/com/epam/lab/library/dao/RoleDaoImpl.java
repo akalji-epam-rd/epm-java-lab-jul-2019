@@ -1,8 +1,9 @@
 package com.epam.lab.library.dao;
 
-import com.epam.lab.library.connectionpool.ConnectionPool;
+
 import com.epam.lab.library.dao.interfaces.RoleDao;
 import com.epam.lab.library.domain.Role;
+import com.epam.lab.library.util.connectionpool.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
