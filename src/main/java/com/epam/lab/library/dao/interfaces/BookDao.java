@@ -12,8 +12,10 @@ public interface BookDao {
 
     Integer save(Book book);
 
-    void update(Book book);
+    Integer update(Book book);
 
     boolean delete(Book book);
 
+    @Deprecated
+    void deleteAll();
 }
