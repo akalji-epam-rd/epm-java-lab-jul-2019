@@ -1,6 +1,6 @@
 package com.epam.lab.library.dao;
 
-import com.epam.lab.library.connectionpool.ConnectionPool;
+import com.epam.lab.library.util.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;

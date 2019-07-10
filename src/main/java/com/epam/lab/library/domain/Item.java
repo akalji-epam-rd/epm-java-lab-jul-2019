@@ -54,4 +54,37 @@ public class Item {
         this.date = date;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Item)) return false;
+
+        Item item = (Item) o;
+
+        return id.equals(item.id) && book.equals(item.book) &&
+                user.equals(item.user) &&
+                status.equals(item.status);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + book.hashCode();
+        result = 31 * result + user.hashCode();
+        result = 31 * result + status.hashCode();
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", book=" + book +
+                ", user=" + user +
+                ", status=" + status +
+                ", date=" + date +
+                '}';
+    }
 }

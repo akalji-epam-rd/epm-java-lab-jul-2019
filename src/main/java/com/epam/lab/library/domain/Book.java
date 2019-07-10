@@ -11,6 +11,13 @@ public class Book {
     private String description;
     private Set<Author> authors;
 
+    public Book() {
+    }
+
+    public Book(int id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -60,5 +67,15 @@ public class Book {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, description);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", authors=" + authors +
+                '}';
     }
 }

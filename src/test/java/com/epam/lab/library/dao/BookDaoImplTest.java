@@ -14,6 +14,7 @@ public class BookDaoImplTest {
 
     private BookDao bookDao = new BookDaoImpl();
 
+
     @Test
     public void saveAndGetById() {
         bookDao.deleteAll();
