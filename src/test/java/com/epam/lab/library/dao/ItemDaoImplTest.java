@@ -143,17 +143,17 @@ public class ItemDaoImplTest {
         user1.setEmail("ya@ya.ru");
         user1.setPassword("12345");
         user1.setName("Vasya");
-        user1.setLastname("Vasilev");
+        user1.setLastName("Vasilev");
         User user2 = new User(2);
         user2.setEmail("go@google.com");
         user2.setPassword("54789");
         user2.setName("Ivan");
-        user2.setLastname("Ivanov");
+        user2.setLastName("Ivanov");
         User user3 = new User(3);
         user3.setEmail("vn@yandex.net");
         user3.setPassword("qwerty");
         user3.setName("Petya");
-        user3.setLastname("Petrovich");
+        user3.setLastName("Petrovich");
 
         // create statuses for items
         Status status1 = new Status();
@@ -227,7 +227,7 @@ public class ItemDaoImplTest {
         user.setEmail("ya@ya.ru");
         user.setPassword("12345");
         user.setName("Vasya");
-        user.setLastname("Vasilev");
+        user.setLastName("Vasilev");
         newItem.setUser(user);
 
         Book book = new Book(1);

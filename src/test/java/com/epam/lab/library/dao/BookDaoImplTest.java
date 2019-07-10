@@ -16,6 +16,7 @@ public class BookDaoImplTest {
 
     @Test
     public void getAll() {
+        bookDao.deleteAll();
 
         Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
         Book book2 = new Book().setName("Crime and Punishment").setDescription("Death from the axe");
@@ -42,6 +43,7 @@ public class BookDaoImplTest {
 
     @Test
     public void saveAndGetById() {
+        bookDao.deleteAll();
 
         Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
         Book book2 = new Book().setName("Crime and Punishment").setDescription("Death from the axe");
@@ -64,6 +66,7 @@ public class BookDaoImplTest {
 
     @Test
     public void update() {
+        bookDao.deleteAll();
 
         Book book;
         Integer id;
@@ -90,6 +93,7 @@ public class BookDaoImplTest {
 
     @Test
     public void delete() {
+        bookDao.deleteAll();
         Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
         Book book2 = new Book().setName("Crime and Punishment").setDescription("Death from the axe");
         Book book3 = new Book().setName("War and Peace").setDescription("Many deaths");

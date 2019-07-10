@@ -152,7 +152,7 @@ public class ItemDaoImpl implements ItemDao {
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
                 user.setName(rs.getString("user_name"));
-                user.setLastname(rs.getString("lastname"));
+                user.setLastName(rs.getString("lastname"));
                 Book book = new Book();
                 book.setId(rs.getInt("book_id"));
                 book.setName(rs.getString("book_name"));
@@ -200,7 +200,7 @@ public class ItemDaoImpl implements ItemDao {
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
                 user.setName(rs.getString("user_name"));
-                user.setLastname(rs.getString("lastname"));
+                user.setLastName(rs.getString("lastname"));
                 Book book = new Book();
                 book.setId(rs.getInt("book_id"));
                 book.setName(rs.getString("book_name"));

@@ -1,7 +1,5 @@
 package com.epam.lab.library.domain;
 
-import java.util.Set;
-
 public class Role {
 
     private Integer id;
@@ -23,5 +21,22 @@ public class Role {
     public Role setName(String name) {
         this.name = name;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+
+        Role role = (Role) o;
+
+        return id.equals(role.id) && name.equals(role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
     }
 }
