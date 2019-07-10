@@ -1,6 +1,8 @@
 package com.epam.lab.library.domain;
 
 
+import java.util.Objects;
+
 public class Role {
 
     private Integer id;
@@ -22,5 +24,26 @@ public class Role {
     public Role setName(String name) {
         this.name = name;
         return this;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) &&
+                name.equals(role.name);
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name=" + name;
     }
 }
