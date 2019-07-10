@@ -1,4 +1,4 @@
-package com.epam.lab.library.connectionpool;
+package com.epam.lab.library.util.connectionpool;
 
 
 import java.io.FileInputStream;
@@ -89,13 +89,18 @@ public class ConnectionPool {
      *
      * @param connection
      */
-    public synchronized void releaseConnection(Connection connection) {
+    public  void releaseConnection(Connection connection) {
 
-        if (connection == null) {
-            throw new NullPointerException();
-        }
+
         if (availableConnections.size() < CAPACITY) {
-            availableConnections.add(connection);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            synchronized(availableConnections) {
+                availableConnections.add(connection);
+            }
         } else {
             try {
                 connection.close();
@@ -105,12 +110,4 @@ public class ConnectionPool {
         }
     }
 
-    /**
-     * return size of connection pool
-     *
-     * @return
-     */
-    public int getSize() {
-        return availableConnections.size();
-    }
 }

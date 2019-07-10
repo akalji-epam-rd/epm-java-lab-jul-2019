@@ -1,13 +1,10 @@
 package com.epam.lab.library.dao;
 
-import com.epam.lab.library.connectionpool.ConnectionPool;
-import com.epam.lab.library.connectionpool.ConnectionPoolTest;
+import com.epam.lab.library.util.connectionpool.ConnectionPool;
 import com.epam.lab.library.domain.Status;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.postgresql.util.PSQLException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -51,8 +48,17 @@ public class StatusesDaoImplTest {
                 "('not taken'), " +
                 "('reading room')";
 
+
+
         Statement st = conn.createStatement();
 
+        st.execute("DROP TABLE IF EXISTS library.statuses CASCADE ");
+        st.execute("CREATE TABLE library.statuses(" +
+                "    id SERIAL," +
+                "    name VARCHAR(50) NOT NULL," +
+                "    CONSTRAINT statuses_pkey PRIMARY KEY(id)," +
+                "    CONSTRAINT name_statuses_key UNIQUE(name)" +
+                ")");
         st.execute(sql);
 
     }

@@ -1,13 +1,12 @@
 package com.epam.lab.library.dao;
 
 
-import com.epam.lab.library.connectionpool.ConnectionPool;
+import com.epam.lab.library.util.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.interfaces.ItemDao;
 import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.domain.Item;
 import com.epam.lab.library.domain.Status;
 import com.epam.lab.library.domain.User;
-import com.sun.corba.se.spi.ior.IORTemplate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
