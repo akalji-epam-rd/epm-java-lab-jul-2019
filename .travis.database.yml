@@ -1,4 +1,4 @@
-test:
+postgres:
   adapter: postgresql
   database: library
   encoding: utf8
