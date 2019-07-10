@@ -6,14 +6,16 @@ import java.util.List;
 
 public interface BookDao {
 
-    Book getById(int id);
+    List<Book> getAll();
 
-    List<Book> getAllByName(String name);
+    Book getById(int id);
 
     Integer save(Book book);
 
-    void update(Book book);
+    Integer update(Book book);
 
     boolean delete(Book book);
 
+    @Deprecated
+    void deleteAll();
 }

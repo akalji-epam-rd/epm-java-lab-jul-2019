@@ -27,7 +27,7 @@ public class ItemDaoImpl implements ItemDao {
             "date_items = ? " +
             "WHERE id = ? " +
             "RETURNING id";
-    private String deleteSql = "DELETE FROM library.items WHERE id = ? RETURNING id";
+    private String deleteSql = "DELETE FROM library.items WHERE id = ?";
     private String selectSql = "SELECT " +
             "i.id, i.date_items, " +
             "u.id AS user_id, u.email, u.password, u.name AS user_name, u.lastname, " +
@@ -73,7 +73,7 @@ public class ItemDaoImpl implements ItemDao {
             e.printStackTrace();
             conn.rollback();
         } finally {
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(true);
             pool.releaseConnection(conn);
         }
 
@@ -113,21 +113,19 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public Integer delete(Item item) throws SQLException {
+    public boolean delete(Item item) throws SQLException {
 
-        Integer id = null;
         Connection conn = pool.getConnection();
         conn.setAutoCommit(false);
 
         PreparedStatement ps = conn.prepareStatement(deleteSql);
         ps.setInt(1, item.getId());
 
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                id = rs.getInt(1);
-            }
+        try {
+            ps.execute();
             conn.commit();
-            System.out.println("Delete item with id: " + id + " was successful");
+            System.out.println("Delete item with id: " + item.getId() + " was successful");
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             conn.rollback();
@@ -136,7 +134,7 @@ public class ItemDaoImpl implements ItemDao {
             pool.releaseConnection(conn);
         }
 
-        return id;
+        return false;
     }
 
 
@@ -154,7 +152,7 @@ public class ItemDaoImpl implements ItemDao {
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
                 user.setName(rs.getString("user_name"));
-                user.setLastname(rs.getString("lastname"));
+                user.setLastName(rs.getString("lastname"));
                 Book book = new Book();
                 book.setId(rs.getInt("book_id"));
                 book.setName(rs.getString("book_name"));
@@ -202,7 +200,7 @@ public class ItemDaoImpl implements ItemDao {
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
                 user.setName(rs.getString("user_name"));
-                user.setLastname(rs.getString("lastname"));
+                user.setLastName(rs.getString("lastname"));
                 Book book = new Book();
                 book.setId(rs.getInt("book_id"));
                 book.setName(rs.getString("book_name"));

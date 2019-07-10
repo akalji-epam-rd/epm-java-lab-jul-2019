@@ -1,9 +1,11 @@
 package com.epam.lab.library.dao;
 
 import com.epam.lab.library.connectionpool.ConnectionPool;
+import com.epam.lab.library.connectionpool.ConnectionPoolTest;
 import com.epam.lab.library.domain.Status;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.postgresql.util.PSQLException;
 
@@ -16,17 +18,17 @@ import static org.junit.Assert.*;
 
 public class StatusesDaoImplTest {
 
-    private ConnectionPool pool = ConnectionPool.getInstance();
-    private Connection conn = null;
+    private static ConnectionPool pool = ConnectionPool.getInstance();
+    private static Connection conn = null;
 
-    private Status status1 = null;
-    private Status status2 = null;
-    private Status status3 = null;
-    private List<Status> statusListExpected = new ArrayList<>();
+    private static Status status1 = null;
+    private static Status status2 = null;
+    private static Status status3 = null;
+    private static List<Status> statusListExpected = new ArrayList<>();
     private List<Status> emptyStatusList = new ArrayList<>();
 
-    @Before
-    public void initialize() throws Exception {
+    @BeforeClass
+    public static void initialize() throws Exception {
         conn = pool.getConnection();
 
         status1 = new Status();
@@ -42,6 +44,17 @@ public class StatusesDaoImplTest {
         statusListExpected.add(status1);
         statusListExpected.add(status2);
         statusListExpected.add(status3);
+
+        String sql = "INSERT INTO library.statuses (name) " +
+                "VALUES " +
+                "('taken'), " +
+                "('not taken'), " +
+                "('reading room')";
+
+        Statement st = conn.createStatement();
+
+        st.execute(sql);
+
     }
 
     @After

@@ -10,11 +10,7 @@ services:
 before_script:
   - chmod +x gradlew
   - psql -c 'create database library;' -U postgres
-  - psql -U postgres -f src/main/sql/schema.sql
-  - psql -U postgres -f src/main/sql/insert_into_books.sql
-  - psql -U postgres -f src/main/sql/insert_into_users.sql
-  - psql -U postgres -f src/main/sql/insert_into_statuses.sql
-  - psql -U postgres -f src/main/sql/insert_into_items.sql
+  - psql -U postgres -f src/main/sql/schema.sql -d library
   - mkdir config && cp .travis.database.yml config/database.yml
 
 script:

@@ -1,49 +1,44 @@
 package com.epam.lab.library.domain;
 
-import java.util.Objects;
+import java.util.Set;
 
 public class Status {
 
     private Integer id;
     private String name;
 
-    public Status() {
-    }
-
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Status setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Status setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Status{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return this;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Status)) return false;
+
         Status status = (Status) o;
-        return Objects.equals(id, status.id) &&
-                name.equals(status.name);
+
+        return id.equals(status.id) && name.equals(status.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
     }
 }

@@ -1,8 +1,6 @@
 package com.epam.lab.library.domain;
 
-
-import java.util.Date;
-import java.util.Objects;
+import java.sql.Date;
 
 public class Item {
 
@@ -12,62 +10,71 @@ public class Item {
     private Status status;
     private Date date;
 
-    public Item() {
-    }
-
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Item setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public Book getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public Item setBook(Book book) {
         this.book = book;
+        return this;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public Item setUser(User user) {
         this.user = user;
+        return this;
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public Item setStatus(Status status) {
         this.status = status;
+        return this;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public Item setDate(Date date) {
         this.date = date;
+        return this;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Item)) return false;
+
         Item item = (Item) o;
-        return Objects.equals(id, item.id) &&
-                book.equals(item.book) &&
+
+        return id.equals(item.id) && book.equals(item.book) &&
                 user.equals(item.user) &&
                 status.equals(item.status);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + book.hashCode();
+        result = 31 * result + user.hashCode();
+        result = 31 * result + status.hashCode();
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        return result;
     }
 
     @Override

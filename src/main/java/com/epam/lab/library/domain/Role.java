@@ -1,7 +1,6 @@
 package com.epam.lab.library.domain;
 
-
-import java.util.Objects;
+import java.util.Set;
 
 public class Role {
 
@@ -26,19 +25,23 @@ public class Role {
         return this;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+
         Role role = (Role) o;
-        return Objects.equals(id, role.id) &&
-                name.equals(role.name);
+
+        return id.equals(role.id) && name.equals(role.name);
     }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
 
     @Override
     public String toString() {
