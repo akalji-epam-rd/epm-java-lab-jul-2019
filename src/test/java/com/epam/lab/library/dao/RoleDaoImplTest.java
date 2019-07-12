@@ -39,7 +39,7 @@ public class RoleDaoImplTest {
         Statement st = null;
         try {
             conn = pool.getConnection();
-            while (conn.isClosed()) conn = pool.getConnection();
+            if (conn.isClosed()) conn = pool.getConnection();
             st = conn.createStatement();
 
         } catch (PSQLException e) {
