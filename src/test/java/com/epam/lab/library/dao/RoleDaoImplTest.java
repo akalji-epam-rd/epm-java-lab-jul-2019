@@ -127,7 +127,12 @@ public class RoleDaoImplTest {
 
     @Test
     public void getById() throws Exception {
-        Role role = roleDao.getById(1);
+        Role role = null;
+        try {
+            role = roleDao.getById(1);
+        } catch (SQLException e ){
+            e.printStackTrace();
+        }
 
         assertNotEquals(role, roleDao.getById(2));
     }
