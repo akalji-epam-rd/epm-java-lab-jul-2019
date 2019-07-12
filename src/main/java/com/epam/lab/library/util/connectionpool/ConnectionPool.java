@@ -92,21 +92,25 @@ public class ConnectionPool {
     public synchronized void  releaseConnection(Connection connection) {
 
 
-        if (availableConnections.size() < CAPACITY) {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
-                availableConnections.add(connection);
+                    availableConnections.add(connection);
 
-        } else {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
