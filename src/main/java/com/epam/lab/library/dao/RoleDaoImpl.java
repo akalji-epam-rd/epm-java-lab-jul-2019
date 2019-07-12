@@ -29,23 +29,21 @@ public class RoleDaoImpl implements RoleDao {
      */
     @Override
     public Role getById(int id) throws SQLException {
-        Connection connection = pool.getConnection();
-        connection.setAutoCommit(false);
-        PreparedStatement statement = connection.prepareStatement(selectSql);
-
-        statement.setInt(1, id);
-        ResultSet resultSet = statement.executeQuery();
+        Connection connection = null;
 
         try {
+            connection = pool.getConnection();
+            PreparedStatement statement = connection.prepareStatement(selectSql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
                 Role role = new Role();
                 role.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"));
-                connection.commit();
                 return role;
             }
         } catch (SQLException e) {
-            connection.rollback();
             e.printStackTrace();
         } finally {
             pool.releaseConnection(connection);
@@ -101,6 +99,7 @@ public class RoleDaoImpl implements RoleDao {
             PreparedStatement statement = connection.prepareStatement(insertSql);
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
+
             Integer id = null;
             if (resultSet.next()) {
                 id = resultSet.getInt("id");
