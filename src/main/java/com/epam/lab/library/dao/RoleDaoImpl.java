@@ -31,8 +31,10 @@ public class RoleDaoImpl implements RoleDao {
     public Role getById(int id) throws SQLException {
         Connection connection = pool.getConnection();
         PreparedStatement statement = connection.prepareStatement(selectSql);
+
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
+
         try {
 
             if (resultSet.next()) {
@@ -40,9 +42,7 @@ public class RoleDaoImpl implements RoleDao {
                 role.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"));
                 return role;
-            } else {
-                return null;
-            }
+            } 
 
         } catch (SQLException e) {
             e.printStackTrace();
