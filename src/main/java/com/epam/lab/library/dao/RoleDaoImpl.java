@@ -42,7 +42,7 @@ public class RoleDaoImpl implements RoleDao {
                 role.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"));
                 return role;
-            } 
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -89,10 +89,10 @@ public class ConnectionPool {
      *
      * @param connection
      */
-    public synchronized void  releaseConnection(Connection connection) {
+    public synchronized void  releaseConnection(Connection connection) throws SQLException {
 
 
-        if (availableConnections.size() < CAPACITY) {
+        if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
             try {
                 connection.setAutoCommit(true);
             } catch (SQLException e) {
