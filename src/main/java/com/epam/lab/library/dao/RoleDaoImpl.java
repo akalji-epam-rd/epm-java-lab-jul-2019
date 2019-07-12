@@ -33,8 +33,7 @@ public class RoleDaoImpl implements RoleDao {
 
         try {
             connection = pool.getConnection();
-            PreparedStatement statement = null;
-            if (!connection.isClosed()) statement = connection.prepareStatement(selectSql);
+            PreparedStatement statement = connection.prepareStatement(selectSql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
