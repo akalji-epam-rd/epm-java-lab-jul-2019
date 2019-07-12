@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class ConnectionPool {
 
-    private static final int CAPACITY = 10;
+    private static final int CAPACITY = 20;
 
     private static List<Connection> availableConnections;
     private static String url = null;
