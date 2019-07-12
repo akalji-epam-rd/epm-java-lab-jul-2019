@@ -11,7 +11,7 @@ import java.util.List;
 
 public class RoleDaoImpl implements RoleDao {
 
-    private ConnectionPool pool = ConnectionPool.getInstance();
+    private static ConnectionPool pool = ConnectionPool.getInstance();
 
     private String selectSql = "SELECT roles.id, roles.name FROM library.roles WHERE roles.id = ?;";
     private String selectAllSql = "SELECT * FROM library.roles;";
