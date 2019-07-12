@@ -28,12 +28,14 @@ public class RoleDaoImpl implements RoleDao {
      * @return Role object
      */
     @Override
-    public Role getById(int id) throws SQLException {
+    public Role getById(int id) {
         Connection connection = null;
 
         try {
             connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(selectSql);
+            PreparedStatement statement = null;
+            if (!connection.isClosed()) statement = connection.prepareStatement(selectSql);
+            
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
