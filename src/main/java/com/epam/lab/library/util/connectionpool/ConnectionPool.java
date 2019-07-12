@@ -89,7 +89,7 @@ public class ConnectionPool {
      *
      * @param connection
      */
-    public  void releaseConnection(Connection connection) {
+    public synchronized void  releaseConnection(Connection connection) {
 
 
         if (availableConnections.size() < CAPACITY) {
@@ -98,9 +98,9 @@ public class ConnectionPool {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            synchronized(availableConnections) {
+
                 availableConnections.add(connection);
-            }
+
         } else {
             try {
                 connection.close();
