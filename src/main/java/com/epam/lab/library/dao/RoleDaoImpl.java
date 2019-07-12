@@ -31,8 +31,8 @@ public class RoleDaoImpl implements RoleDao {
         Connection connection = pool.getConnection();
         PreparedStatement statement = connection.prepareStatement(selectSql);
         statement.setInt(1, id);
-
-        try (ResultSet resultSet = statement.executeQuery()) {
+        ResultSet resultSet = statement.executeQuery();
+        try {
 
             if (resultSet.next()) {
                 Role role = new Role();
@@ -42,7 +42,6 @@ public class RoleDaoImpl implements RoleDao {
             } else {
                 return null;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

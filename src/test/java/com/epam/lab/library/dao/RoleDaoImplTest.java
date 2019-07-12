@@ -146,8 +146,6 @@ public class RoleDaoImplTest {
 
         boolean deleted = roleDao.delete(id);
 
-
-
         assertEquals(true, deleted);
         assertEquals(null, roleDao.getById(id));
     }
