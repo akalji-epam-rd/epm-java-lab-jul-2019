@@ -6,12 +6,16 @@ import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//TODO ResultSet in try with resources
 public class AuthorDaoImpl implements AuthorDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
