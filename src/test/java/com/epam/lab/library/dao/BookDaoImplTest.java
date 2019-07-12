@@ -12,34 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 public class BookDaoImplTest {
 
-    BookDao bookDao = new BookDaoImpl();
+    private BookDao bookDao = new BookDaoImpl();
 
-    @Test
-    public void getAll() {
-        bookDao.deleteAll();
-
-        Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
-        Book book2 = new Book().setName("Crime and Punishment").setDescription("Death from the axe");
-        Book book3 = new Book().setName("War and Peace").setDescription("Many deaths");
-
-        bookDao.save(book1);
-        bookDao.save(book2);
-        bookDao.save(book3);
-
-
-        List<Book> books = new ArrayList<>();
-        books.add(book1);
-        books.add(book2);
-        books.add(book3);
-
-        List<Book> booksFromDB = bookDao.getAll();
-        for (Book book : booksFromDB) {
-            book.setId(null);
-        }
-
-        assertEquals(books, booksFromDB);
-        bookDao.deleteAll();
-    }
 
     @Test
     public void saveAndGetById() {
@@ -61,7 +35,6 @@ public class BookDaoImplTest {
         id = bookDao.save(book3);
         book3.setId(id);
         assertEquals(book3, bookDao.getById(id));
-        bookDao.deleteAll();
     }
 
     @Test
@@ -88,12 +61,12 @@ public class BookDaoImplTest {
         book.setId(id).setDescription("Long story").setName("Very long story");
         bookDao.update(book);
         assertEquals(book, bookDao.getById(id));
-        bookDao.deleteAll();
     }
 
     @Test
     public void delete() {
         bookDao.deleteAll();
+
         Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
         Book book2 = new Book().setName("Crime and Punishment").setDescription("Death from the axe");
         Book book3 = new Book().setName("War and Peace").setDescription("Many deaths");
