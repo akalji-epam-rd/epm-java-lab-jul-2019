@@ -16,3 +16,6 @@ before_script:
 script:
   - ./gradlew build --scan -s
 
+env:
+  global:
+    MALLOC_ARENA_MAX=2
