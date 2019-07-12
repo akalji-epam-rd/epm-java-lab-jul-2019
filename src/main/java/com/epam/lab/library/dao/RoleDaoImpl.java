@@ -5,10 +5,7 @@ import com.epam.lab.library.dao.interfaces.RoleDao;
 import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +13,12 @@ public class RoleDaoImpl implements RoleDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
-    private String selectSql = "SELECT roles.id, roles.name FROM library.roles WHERE roles.id = ?";
-    private String selectAllSql = "SELECT * FROM library.roles ";
-    private String insertSql = "INSERT INTO library.roles (name) VALUES (?);";
-    private String selectIdSql = "SELECT id FROM library.roles WHERE name =?;";
-    private String updateSql = "INSERT INTO library.roles (id, name) VALUES (?,?);";
-    private String existSql = "EXISTS(SELECT role_id FROM library.user_roles WHERE role_id = ?);";
-    private String deleteSql = "DELETE from library.roles WHERE id = ?;";
+    private String selectSql = "SELECT roles.id, roles.name FROM library.roles WHERE roles.id = ?;";
+    private String selectAllSql = "SELECT * FROM library.roles;";
+    private String insertSql = "INSERT INTO library.roles (name) VALUES (?) RETURNING id;";
+    private String updateSql = "UPDATE library.roles SET name = ? WHERE id = ?;";
+    private String existSql = "SELECT role_id FROM library.users_roles WHERE role_id = ?;";
+    private String deleteSql = "DELETE from library.roles WHERE id = ? RETURNING id;";
 
     /**
      * Method return role object
@@ -102,18 +98,19 @@ public class RoleDaoImpl implements RoleDao {
 
             PreparedStatement statement = connection.prepareStatement(insertSql);
             statement.setString(1, name);
-            statement.executeQuery();
-
-            statement = connection.prepareStatement(selectIdSql);
-            statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.getInt("id");
+            Integer id = null;
+            if (resultSet.next()) {
+                id = resultSet.getInt("id");
+            }
+
+            return id;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             pool.releaseConnection(connection);
         }
-        return role.getId();
+        return null;
     }
 
     /**
@@ -130,16 +127,19 @@ public class RoleDaoImpl implements RoleDao {
             connection = pool.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(updateSql);
-            statement.setInt(1, role.getId());
-            statement.setString(2, role.getName());
-            statement.executeQuery();
 
+            statement.setString(1, role.getName());
+            statement.setInt(2, role.getId());
+
+            statement.executeUpdate();
+
+            return role.getId();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             pool.releaseConnection(connection);
         }
-        return role.getId();
+        return null;
     }
 
     /**
@@ -158,12 +158,12 @@ public class RoleDaoImpl implements RoleDao {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
-            String result = resultSet.getString("exist");
+            if (!resultSet.next()) {
 
-            if (!result.equals("true")) {
                 statement = connection.prepareStatement(deleteSql);
                 statement.setInt(1, id);
                 statement.executeQuery();
+
                 return true;
             }
         } catch (SQLException e) {

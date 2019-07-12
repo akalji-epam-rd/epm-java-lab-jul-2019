@@ -25,12 +25,14 @@ public class RoleDaoImplTest {
     private Role newRole;
     private Role updatedRole;
 
-    private String initializeRoleDataSql = "INSERT INTO library.roles (name) VALUES ('Student'), ('Admin'),('Librarian')";
-    private String initializeUserDataSql = "INSERT INTO library.users (email, password, name, lastname) " +
+    private String initializeRoleDataSql = "INSERT INTO library.roles (name) VALUES ('Student'), ('Admin'),('Librarian');";
+    private String initializeUserDataSql =
+            " INSERT INTO library.users (email, password, name, lastname) " +
                     "VALUES " +
                     "  ('ya@ya.ru', '12345', 'Vasya', 'Vasilev'), " +
                     "  ('go@google.com', '54789', 'Ivan', 'Ivanov'), " +
                     "  ('vn@yandex.net', 'qwerty', 'Petya', 'Petrovich');";
+    private String initializeUsersRolesDataSql = "INSERT INTO library.users_roles (user_id, role_id) VALUES (1,1), (2,2), (3,3);";
 
     @Before
     public void initialize() throws SQLException {
@@ -59,12 +61,15 @@ public class RoleDaoImplTest {
                 " CONSTRAINT users_pkey PRIMARY KEY (id),  " +
                 "    CONSTRAINT email_key UNIQUE (email)  " +
                 ")");
+
+
         st.execute("CREATE TABLE library.roles (" +
                 "id SERIAL," +
                 "    name VARCHAR(50) NOT NULL," +
                 "CONSTRAINT roles_pkey PRIMARY KEY (id)," +
                 "    CONSTRAINT name_roles_key UNIQUE (name)" +
                 ")");
+
         st.execute("CREATE TABLE library.users_roles(" +
                 "user_id INTEGER NOT NULL," +
                 "    role_id INTEGER NOT NULL," +
@@ -82,41 +87,28 @@ public class RoleDaoImplTest {
                 ")");
 
 
+
+
         st.execute(initializeRoleDataSql);
         st.execute(initializeUserDataSql);
-
-        //Users
-        User user1 = new User(1);
-        user1.setEmail("ya@ya.ru");
-        user1.setPassword("12345");
-        user1.setName("Vasya");
-        user1.setLastName("Vasilev");
-        User user2 = new User(2);
-        user2.setEmail("go@google.com");
-        user2.setPassword("54789");
-        user2.setName("Ivan");
-        user2.setLastName("Ivanov");
-        User user3 = new User(3);
-        user3.setEmail("vn@yandex.net");
-        user3.setPassword("qwerty");
-        user3.setName("Petya");
-        user3.setLastName("Petrovich");
+        st.execute(initializeUsersRolesDataSql);
 
     }
 
     @After
     public void deleteDbData() throws SQLException {
         newRole = null;
-        updatedRole= null;
+        updatedRole = null;
         pool.releaseConnection(conn);
     }
 
     @Test
     public void save() throws SQLException {
         newRole = new Role();
-        newRole.setName("TestS");
+        newRole.setName("TestSaving");
 
         Integer id = roleDao.save(newRole);
+        newRole.setId(id);
 
         assertEquals(roleDao.getById(id), newRole);
         assertNotEquals(roleDao.getById(2), newRole);
@@ -125,9 +117,8 @@ public class RoleDaoImplTest {
     @Test
     public void update() throws SQLException {
         updatedRole = roleDao.getById(1);
-        Role role = new Role();
-        role.setName("Tester");
-        updatedRole.setName("Tester");
+        updatedRole.setId(1);
+        updatedRole.setName("Testerrr");
 
         Integer id = roleDao.update(updatedRole);
 
@@ -145,12 +136,15 @@ public class RoleDaoImplTest {
     public void delete() throws Exception {
 
         Role role = new Role();
-        role.setName("TesterD");
+        role.setName("TesterDelete");
+        Integer id = roleDao.save(role);
 
-        boolean deleted = roleDao.delete(role.getId());
+        boolean deleted = roleDao.delete(id);
+
+
 
         assertEquals(true, deleted);
-        assertEquals(null, roleDao.getById(role.getId()));
+        assertEquals(null, roleDao.getById(id));
     }
 
 
