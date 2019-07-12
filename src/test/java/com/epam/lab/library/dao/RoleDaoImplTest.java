@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -128,6 +130,27 @@ public class RoleDaoImplTest {
         Role role = roleDao.getById(1);
 
         assertNotEquals(role, roleDao.getById(2));
+    }
+
+
+    @Test
+    public void getAll() throws Exception {
+        Role r1 = new Role();
+        Role r2 = new Role();
+        Role r3 = new Role();
+        r1.setId(1);
+        r1.setName("Student");
+        r2.setId(2);
+        r2.setName("Admin");
+        r3.setId(3);
+        r3.setName("Librarian");
+
+        List<Role> list = new ArrayList<>();
+        list.add(r1);
+        list.add(r2);
+        list.add(r3);
+
+        assertEquals(list, roleDao.getAll());
     }
 
     @Test

@@ -23,7 +23,6 @@ public class RoleDaoImpl implements RoleDao {
     /**
      * Method return role object
      *
-     *
      * @param id Role id
      * @return Role object
      */
@@ -59,11 +58,14 @@ public class RoleDaoImpl implements RoleDao {
      */
     @Override
     public List<Role> getAll() throws SQLException {
-        Connection connection = pool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(selectAllSql);
-
+        Connection connection = null;
         List<Role> list = new ArrayList<>();
-        try (ResultSet resultSet = statement.executeQuery()){
+
+        try {
+            connection = pool.getConnection();
+            connection = pool.getConnection();
+            PreparedStatement statement = connection.prepareStatement(selectAllSql);
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Role role = new Role();
@@ -175,8 +177,6 @@ public class RoleDaoImpl implements RoleDao {
         }
         return false;
     }
-
-
 
 
 }
