@@ -143,7 +143,7 @@ public class RoleDaoImplTest {
         Role role = new Role();
         role.setName("TesterDelete");
         Integer id = roleDao.save(role);
-
+        //
         boolean deleted = roleDao.delete(id);
 
         assertEquals(true, deleted);

@@ -23,6 +23,7 @@ public class RoleDaoImpl implements RoleDao {
     /**
      * Method return role object
      *
+     *
      * @param id Role id
      * @return Role object
      */
@@ -42,6 +43,7 @@ public class RoleDaoImpl implements RoleDao {
             } else {
                 return null;
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
