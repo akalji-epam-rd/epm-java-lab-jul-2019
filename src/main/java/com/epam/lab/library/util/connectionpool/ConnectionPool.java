@@ -89,24 +89,28 @@ public class ConnectionPool {
      *
      * @param connection
      */
-    public synchronized void  releaseConnection(Connection connection) throws SQLException {
+    public synchronized void  releaseConnection(Connection connection) {
 
 
-        if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try {
+            if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                    availableConnections.add(connection);
+
+            } else {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-
-                availableConnections.add(connection);
-
-        } else {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
