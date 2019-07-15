@@ -23,9 +23,8 @@ public class AuthorController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         List<Author> authors = authorDao.getAll();
-
         request.setAttribute("authors", authors);
-        request.getRequestDispatcher(resolver.getViewPath(request)).forward(request, response);
+        request.getRequestDispatcher(resolver.getViewPath(request)[1]).forward(request, response);
     }
 
     @Override

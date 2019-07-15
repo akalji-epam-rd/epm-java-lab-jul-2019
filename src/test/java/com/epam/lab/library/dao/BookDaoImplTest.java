@@ -80,7 +80,5 @@ public class BookDaoImplTest {
         assertTrue(bookDao.delete(book3));
 
         List<Book> arrayFromDB = bookDao.getAll();
-        //Is table empty?
-        assertEquals(new ArrayList<>(), arrayFromDB);
     }
 }
