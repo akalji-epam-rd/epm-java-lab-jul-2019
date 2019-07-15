@@ -1,7 +1,6 @@
 package com.epam.lab.library.util.connectionpool;
 
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,14 +25,14 @@ public class ConnectionPool {
         ConnectionPool localInstance = instance;
         if (localInstance == null) {
 
-            try (FileInputStream fis = new FileInputStream("src/main/resources/db.properties")) {
+            try {
+                Class.forName("org.postgresql.Driver");
                 Properties property = new Properties();
-                property.load(fis);
-
+                property.load(ConnectionPool.class.getClassLoader().getResourceAsStream("db.properties"));
                 url = property.getProperty("db.url");
                 user = property.getProperty("db.user");
                 password = property.getProperty("db.password");
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
@@ -89,24 +88,28 @@ public class ConnectionPool {
      *
      * @param connection
      */
-    public  void releaseConnection(Connection connection) {
+    public synchronized void  releaseConnection(Connection connection) {
 
 
-        if (availableConnections.size() < CAPACITY) {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try {
+            if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                    availableConnections.add(connection);
+
+            } else {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-            synchronized(availableConnections) {
-                availableConnections.add(connection);
-            }
-        } else {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,7 @@
 package com.epam.lab.library.domain;
 
+import java.util.Set;
+
 public class Role {
 
     private Integer id;
@@ -38,5 +40,13 @@ public class Role {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         return result;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name=" + name;
     }
 }

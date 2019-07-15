@@ -1,6 +1,7 @@
 package com.epam.lab.library.domain;
 
-import java.util.Set;
+import org.json.JSONObject;
+
 
 public class Status {
 
@@ -40,5 +41,14 @@ public class Status {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         return result;
+    }
+
+    public JSONObject getAsJson() {
+
+        JSONObject book = new JSONObject();
+        book.put("id", this.id);
+        book.put("name", this.name);
+
+        return book;
     }
 }
