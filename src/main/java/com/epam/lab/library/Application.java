@@ -14,9 +14,5 @@ import java.util.List;
 public class Application {
 
     public static void main(String[] args) throws MalformedURLException {
-        AuthorDao authorDao = new AuthorDaoImpl();
-        authorDao.save(new Author().setName("Lev").setLastName("Tolstoy"));
-        authorDao.save(new Author().setName("Alex").setLastName("Pushkin"));
-        authorDao.save(new Author().setName("Nikolai").setLastName("Gogol"));
     }
 }

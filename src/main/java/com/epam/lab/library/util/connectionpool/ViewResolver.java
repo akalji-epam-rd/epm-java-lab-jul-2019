@@ -5,14 +5,14 @@ import javax.servlet.http.HttpServletRequest;
 public class ViewResolver {
 
     /**
-     * Parses request address according to REST style
+     * resolve url according to REST
      * @param request
-     * @return path of respective view
+     * @return [0] - type of request like add, edit etc. [1] - path to view
      */
-    public String getViewPath(HttpServletRequest request) {
+    public String[] getViewPath(HttpServletRequest request) {
         final String root = "/WEB-INF/views" + request.getServletPath();
         String pathInfo = request.getPathInfo().substring(1);
-        String path = pathInfo.split("/")[0];
-        return root + "/" + path + ".jsp";
+        String type = pathInfo.split("/")[0];
+        return new String[] {type, root + "/" + type + ".jsp"};
     }
 }
