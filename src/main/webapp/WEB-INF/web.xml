@@ -3,4 +3,27 @@
     <display-name>Library</display-name>
     <description>Useless stuff</description>
 
+    <servlet>
+        <servlet-name>ItemsServlet</servlet-name>
+        <servlet-class>com.epam.lab.library.controller.ItemController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ItemsServlet</servlet-name>
+        <url-pattern>/allItems</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ItemAjaxServlet</servlet-name>
+        <servlet-class>com.epam.lab.library.controller.ItemAjaxController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ItemAjaxServlet</servlet-name>
+        <url-pattern>/items/*</url-pattern>
+    </servlet-mapping>
+
+
+
+
 </web-app>
