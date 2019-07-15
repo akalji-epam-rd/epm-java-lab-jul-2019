@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//TODO ResultSet in try with resources
+//TODO put ResultSet in try with resources
 public class AuthorDaoImpl implements AuthorDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
