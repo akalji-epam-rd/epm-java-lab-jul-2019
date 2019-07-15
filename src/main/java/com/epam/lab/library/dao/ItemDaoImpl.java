@@ -59,7 +59,11 @@ public class ItemDaoImpl implements ItemDao {
 
         PreparedStatement ps = conn.prepareStatement(saveSql);
         ps.setInt(1, item.getBook().getId());
-        ps.setInt(2, item.getUser().getId());
+        if (item.getUser() != null) {
+            ps.setInt(2, item.getUser().getId());
+        } else {
+            ps.setNull(2, 0);
+        }
         ps.setInt(3, item.getStatus().getId());
         ps.setDate(4, new java.sql.Date(new Date().getTime()));
 
@@ -90,7 +94,11 @@ public class ItemDaoImpl implements ItemDao {
 
         PreparedStatement ps = conn.prepareStatement(updateSql);
         ps.setInt(1, item.getBook().getId());
-        ps.setInt(2, item.getUser().getId());
+        if (item.getUser() != null) {
+            ps.setInt(2, item.getUser().getId());
+        } else {
+            ps.setNull(2, 0);
+        }
         ps.setInt(3, item.getStatus().getId());
         ps.setDate(4, new java.sql.Date(new Date().getTime()));
         ps.setInt(5, item.getId());

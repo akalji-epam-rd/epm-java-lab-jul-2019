@@ -1,5 +1,7 @@
 package com.epam.lab.library.domain;
 
+import org.json.JSONObject;
+
 import java.sql.Date;
 
 public class Item {
@@ -86,5 +88,17 @@ public class Item {
                 ", status=" + status +
                 ", date=" + date +
                 '}';
+    }
+
+    public JSONObject getAsJson() {
+        JSONObject item = new JSONObject();
+        item.put("id", this.id);
+        item.put("book", this.book.getAsJson());
+        item.put("user", this.user.getAsJson());
+        item.put("status", this.status.getAsJson());
+        item.put("date", this.date);
+
+        return item;
+
     }
 }
