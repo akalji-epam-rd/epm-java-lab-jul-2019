@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//TODO put ResultSet in try with resources
 public class BookDaoImpl implements BookDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
