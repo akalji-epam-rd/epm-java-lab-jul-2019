@@ -1,5 +1,19 @@
-apply plugin: 'java'
+buildscript {
+    repositories {
+        jcenter()
+    }
 
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+    }
+}
+
+plugins {
+    id 'war'
+    id 'java'
+}
+
+apply plugin: 'com.bmuschko.tomcat'
 
 if (hasProperty('buildScan')) {
     buildScan {
@@ -20,7 +34,22 @@ repositories {
 
 dependencies {
     implementation group: 'junit', name: 'junit', version: '4.12'
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+
+
+    def tomcatVersion = '9.0.22'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+}
+
+tomcat {
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
 }
 
 test {
