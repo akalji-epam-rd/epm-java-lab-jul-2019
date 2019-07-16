@@ -94,7 +94,7 @@ public class ItemAjaxController extends HttpServlet {
         Item item = new Item();
         item.setId(itemId);
         item.setBook(bookDao.getById(bookId));
-        item.setUser(userId != null ? userDao.get(userId) : null);
+        item.setUser(userId != null ? userDao.getById(userId) : null);
         item.setStatus(statusesDao.getById(statusId));
         item.setDate(new Date(new java.util.Date().getTime()));
 
@@ -182,7 +182,7 @@ public class ItemAjaxController extends HttpServlet {
         if (requestParameters != null) {
             itemId = requestParameters.getInt("itemId");
             bookId = requestParameters.getInt("bookId");
-//            userId = requestParameters.getInt("userId") > -1 ? requestParameters.getInt("userId") : null;
+            userId = requestParameters.getInt("userId") > -1 ? requestParameters.getInt("userId") : null;
             statusId = requestParameters.getInt("status");
         }
 
@@ -194,7 +194,7 @@ public class ItemAjaxController extends HttpServlet {
             id = Integer.parseInt(pathInfo[pathInfo.length - 1]);
             item = itemDao.getById(id);
             item.setBook(bookDao.getById(bookId));
-            item.setUser(userId != null ? userDao.get(userId) : null);
+            item.setUser(userId != null ? userDao.getById(userId) : null);
             item.setStatus(statusesDao.getById(statusId));
             item.setDate(new Date(new java.util.Date().getTime()));
             itemDao.update(item);

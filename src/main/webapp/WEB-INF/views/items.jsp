@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<link rel="stylesheet" href="static/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../static/css/bootstrap.min.css">
 
 <html>
 <head>
@@ -133,11 +133,11 @@
     function updateTable(items) {
         const table = document.getElementById('items_table');
         const rowsCount = table.rows.length;
-        for(let i = rowsCount-1; i > 0; i--) {
+        for (let i = rowsCount - 1; i > 0; i--) {
             table.deleteRow(i);
         }
 
-        for(let i = 0; i < items.length; i++) {
+        for (let i = 0; i < items.length; i++) {
             createRow(items[i]);
         }
     }
@@ -154,109 +154,125 @@
 
 <body>
 
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Library</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="<c:url value='/book/all'/>">Books</a></li>
+            <li><a href="<c:url value='/allItems'/>">Items</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="<c:url value='/logout'/>"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
 <div class="container">
     <h2>Library items</h2>
-</div>
 
-<div>
-    <table id="items_table" class="table table-striped">
-        <tr>
-            <td>Book</td>
-            <td>User</td>
-            <td>Status</td>
-            <td>Date</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <c:forEach items="${items}" var="item">
+
+    <div>
+        <table id="items_table" class="table table-striped">
             <tr>
-                <td><c:out value="${item.book.name}"/></td>
-                <td><c:out value="${item.user.name} ${item.user.lastName}"/></td>
-                <td><c:out value="${item.status.name}"/></td>
-                <td><c:out value="${item.date}"/></td>
-                <td>
-                    <button class="btn btn-danger" onclick="removeItem(${item.id}, this)">
-                        <span class="fa fa-remove"></span>
-                    </button>
-                </td>
-                <td>
-                    <button class="btn-default" onclick="updateItem(${item.id}, this)">
-                        <span class="glyphicon-pencil"></span>
-                    </button>
-                </td>
+                <td>Book</td>
+                <td>User</td>
+                <td>Status</td>
+                <td>Date</td>
+                <td></td>
+                <td></td>
             </tr>
-        </c:forEach>
-    </table>
-</div>
+            <c:forEach items="${items}" var="item">
+                <tr>
+                    <td><c:out value="${item.book.name}"/></td>
+                    <td><c:out value="${item.user.name} ${item.user.lastName}"/></td>
+                    <td><c:out value="${item.status.name}"/></td>
+                    <td><c:out value="${item.date}"/></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeItem(${item.id}, this)">
+                            <span class="fa fa-remove"></span>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn-default" onclick="updateItem(${item.id}, this)">
+                            <span class="glyphicon-pencil"></span>
+                        </button>
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
 
 
-<div>
-    <form id="addItemForm">
-        <input hidden name="itemId" value="-1">
-        <label>
-            Book:
-            <select name="bookId">
-                <option value="-1">Choose book</option>
-                <c:forEach items="${books}" var="book">
-                    <option value="${book.id}">${book.name}</option>
-                </c:forEach>
-            </select>
-        </label>
-        <label>
-            User:
-            <select name="userId">
-                <option value="-1">Choose user</option>
-                <c:forEach items="${users}" var="user">
-                    <option value="${user.id}">${user.name} ${user.lastName}</option>
-                </c:forEach>
-            </select>
-        </label>
-        <label>
-            Status:
-            <select name="status">
-                <option value="-1">Choose status</option>
-                <c:forEach items="${statuses}" var="status">
-                    <option value="${status.id}">${status.name}</option>
-                </c:forEach>
-            </select>
-        </label>
-        <button type="button" class="btn btn-default" onclick="addItem()">Add Item</button>
-    </form>
-</div>
+    <div>
+        <form id="addItemForm">
+            <input hidden name="itemId" value="-1">
+            <label>
+                Book:
+                <select name="bookId">
+                    <option value="-1">Choose book</option>
+                    <c:forEach items="${books}" var="book">
+                        <option value="${book.id}">${book.name}</option>
+                    </c:forEach>
+                </select>
+            </label>
+            <label>
+                User:
+                <select name="userId">
+                    <option value="-1">Choose user</option>
+                    <c:forEach items="${users}" var="user">
+                        <option value="${user.id}">${user.name} ${user.lastName}</option>
+                    </c:forEach>
+                </select>
+            </label>
+            <label>
+                Status:
+                <select name="status">
+                    <option value="-1">Choose status</option>
+                    <c:forEach items="${statuses}" var="status">
+                        <option value="${status.id}">${status.name}</option>
+                    </c:forEach>
+                </select>
+            </label>
+            <button type="button" class="btn btn-default" onclick="addItem()">Add Item</button>
+        </form>
+    </div>
 
-<div>
-    <form id="updateItemForm">
-        <input hidden name="itemId" value="-1">
-        <label>
-            Book:
-            <select name="bookId">
-                <option value="-1">Choose book</option>
-                <c:forEach items="${books}" var="book">
-                    <option value="${book.id}">${book.name}</option>
-                </c:forEach>
-            </select>
-        </label>
-        <label>
-            User:
-            <select name="userId">
-                <option value="-1">Choose user</option>
-                <c:forEach items="${users}" var="user">
-                    <option value="${user.id}">${user.name} ${user.lastName}</option>
-                </c:forEach>
-            </select>
-        </label>
-        <label>
-            Status:
-            <select name="status">
-                <option value="-1">Choose status</option>
-                <c:forEach items="${statuses}" var="status">
-                    <option value="${status.id}">${status.name}</option>
-                </c:forEach>
-            </select>
-        </label>
-        <button type="button" class="btn btn-default" onclick="submitUpdateItem()">Update Item</button>
-        <button type="button" class="btn btn-default" onclick="cancelUpdate()">Cancel</button>
-    </form>
+    <div>
+        <form id="updateItemForm">
+            <input hidden name="itemId" value="-1">
+            <label>
+                Book:
+                <select name="bookId">
+                    <option value="-1">Choose book</option>
+                    <c:forEach items="${books}" var="book">
+                        <option value="${book.id}">${book.name}</option>
+                    </c:forEach>
+                </select>
+            </label>
+            <label>
+                User:
+                <select name="userId">
+                    <option value="-1">Choose user</option>
+                    <c:forEach items="${users}" var="user">
+                        <option value="${user.id}">${user.name} ${user.lastName}</option>
+                    </c:forEach>
+                </select>
+            </label>
+            <label>
+                Status:
+                <select name="status">
+                    <option value="-1">Choose status</option>
+                    <c:forEach items="${statuses}" var="status">
+                        <option value="${status.id}">${status.name}</option>
+                    </c:forEach>
+                </select>
+            </label>
+            <button type="button" class="btn btn-default" onclick="submitUpdateItem()">Update Item</button>
+            <button type="button" class="btn btn-default" onclick="cancelUpdate()">Cancel</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>
