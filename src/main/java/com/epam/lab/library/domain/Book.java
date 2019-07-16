@@ -1,5 +1,7 @@
 package com.epam.lab.library.domain;
 
+import org.json.JSONObject;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -77,5 +79,16 @@ public class Book {
                 ", description='" + description + '\'' +
                 ", authors=" + authors +
                 '}';
+    }
+
+    public JSONObject getAsJson() {
+
+        JSONObject book = new JSONObject();
+        book.put("id", this.id);
+        book.put("name", this.name);
+        book.put("description", this.description);
+        book.put("author", this.authors); // TODO: create getAsJson for Author class
+
+        return book;
     }
 }

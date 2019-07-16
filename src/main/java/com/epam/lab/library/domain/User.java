@@ -1,5 +1,7 @@
 package com.epam.lab.library.domain;
 
+import org.json.JSONObject;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -109,5 +111,17 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public JSONObject getAsJson() {
+        JSONObject user = new JSONObject();
+
+        user.put("id", this.id);
+        user.put("email", this.email);
+        user.put("name", this.name);
+        user.put("lastName", this.lastName);
+        user.put("roles", this.roles); // TODO: create method getAsJson for Role class
+
+        return user;
     }
 }

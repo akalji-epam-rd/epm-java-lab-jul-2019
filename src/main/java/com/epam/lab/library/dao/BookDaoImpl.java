@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//TODO put ResultSet in try with resources
 public class BookDaoImpl implements BookDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
@@ -29,19 +30,48 @@ public class BookDaoImpl implements BookDao {
         try {
             connection = pool.getConnection();
 
-            String query = "SELECT * FROM library.books";
+            String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
+                    "FROM library.books " +
+                    "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
+                    "LEFT JOIN library.authors ON authors_books.author_id = authors.id";
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
-            List<Book> books = new ArrayList<>();
-            while (resultSet.next()) {
-                Book book = new Book();
-                book.setId(resultSet.getInt("id"))
-                        .setName(resultSet.getString("name"))
-                        .setDescription(resultSet.getString("description"));
-                books.add(book);
+            if (!resultSet.next()) {
+                return null;
             }
+
+            List<Book> books = new ArrayList<>();
+
+            Book book = null;
+            Set<Author> authors = null;
+            Integer prevBookId = null;
+
+            while (resultSet.next()) {
+                Integer currentBookId = resultSet.getInt("b_id");
+
+                if (!currentBookId.equals(prevBookId)) {
+                    prevBookId = resultSet.getInt("b_id");
+
+                    book = new Book();
+                    authors = new HashSet<>();
+                    book.setAuthors(authors);
+                    books.add(book);
+
+                    book.setId(prevBookId)
+                            .setName(resultSet.getString("b_name"))
+                            .setDescription(resultSet.getString("b_description"));
+                }
+
+                Author author = new Author();
+                author.setId(resultSet.getInt("a_id"))
+                        .setName(resultSet.getString("a_name"))
+                        .setLastName(resultSet.getString("a_lastname"));
+                authors.add(author);
+            }
+
+            resultSet.close();
             return books;
 
         } catch (SQLException e) {
