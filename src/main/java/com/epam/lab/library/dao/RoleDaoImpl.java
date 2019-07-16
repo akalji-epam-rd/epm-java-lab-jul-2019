@@ -109,6 +109,7 @@ public class RoleDaoImpl implements RoleDao {
         }
 
         try {
+
             connection = pool.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(insertSql);
@@ -162,6 +163,7 @@ public class RoleDaoImpl implements RoleDao {
      * Method deletes role with current id in DB
      *
      * @param id ID of role to delete
+
      * @return Delete result
      */
     @Override
