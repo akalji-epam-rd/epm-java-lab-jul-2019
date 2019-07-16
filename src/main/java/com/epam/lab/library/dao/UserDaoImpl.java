@@ -1,10 +1,12 @@
 package com.epam.lab.library.dao;
 
+
 import com.epam.lab.library.dao.interfaces.RoleDao;
 import com.epam.lab.library.dao.interfaces.UserDao;
 
 
 import com.epam.lab.library.domain.Role;
+
 import com.epam.lab.library.domain.User;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
 
@@ -12,14 +14,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 public class UserDaoImpl implements UserDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
+
     private RoleDao roleDao = new RoleDaoImpl();
 
     private String selectSql = "SELECT u.id, u.name, u.lastname, u.email, u.password, ro.name AS role_name FROM library.users u " +
@@ -44,25 +49,29 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getById(int id) {
 
+
         Connection connection = null;
         try {
             connection = pool.getConnection();
+
             connection = pool.getConnection();
+
 
             PreparedStatement statement = connection.prepareStatement(selectSql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
+
             User user = new User();
             Set<Role> roles = new HashSet<>();
 
             if (resultSet.next()) {
+
                 user.setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"))
                         .setLastName(resultSet.getString("lastname"))
                         .setEmail(resultSet.getString("email"))
                         .setPassword(resultSet.getString("password"));
-
                 do {
                     Role role = new Role();
                     role.setName(resultSet.getString("role_name"));
@@ -73,6 +82,7 @@ public class UserDaoImpl implements UserDao {
                 user.setRoles(roles);
             }
             return user;
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -260,5 +270,6 @@ public class UserDaoImpl implements UserDao {
             pool.releaseConnection(connection);
         }
         return false;
+
     }
 }
