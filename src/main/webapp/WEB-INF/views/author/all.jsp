@@ -5,7 +5,6 @@
     <title>First JSP</title>
 </head>
 <body>
-    <p>${message}</p>
     <c:forEach items="${authors}" var="author">
         <c:out value="${author.name}" />
         <c:out value="${author.lastName}" />
