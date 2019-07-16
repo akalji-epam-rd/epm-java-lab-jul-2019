@@ -182,7 +182,9 @@ public class ItemAjaxController extends HttpServlet {
         if (requestParameters != null) {
             itemId = requestParameters.getInt("itemId");
             bookId = requestParameters.getInt("bookId");
-//            userId = requestParameters.getInt("userId") > -1 ? requestParameters.getInt("userId") : null;
+
+            userId = requestParameters.getInt("userId") > -1 ? requestParameters.getInt("userId") : null;
+
             statusId = requestParameters.getInt("status");
         }
 

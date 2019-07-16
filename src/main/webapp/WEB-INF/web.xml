@@ -3,4 +3,51 @@
     <display-name>Library</display-name>
     <description>Useless stuff</description>
 
+    <welcome-file-list>
+        <welcome-file>/WEB-INF/views/login.jsp</welcome-file>
+    </welcome-file-list>
+
+    <servlet>
+        <servlet-name>ItemsServlet</servlet-name>
+        <servlet-class>com.epam.lab.library.controller.ItemController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ItemsServlet</servlet-name>
+        <url-pattern>/allItems</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ItemAjaxServlet</servlet-name>
+        <servlet-class>com.epam.lab.library.controller.ItemAjaxController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ItemAjaxServlet</servlet-name>
+        <url-pattern>/items/*</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.epam.lab.library.AuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.epam.lab.library.LogoutServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+
+
 </web-app>
