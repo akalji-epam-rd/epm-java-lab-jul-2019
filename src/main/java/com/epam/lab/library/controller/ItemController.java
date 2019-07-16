@@ -10,7 +10,9 @@ import com.epam.lab.library.dao.interfaces.StatusesDao;
 import com.epam.lab.library.dao.interfaces.UserDao;
 import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.domain.Item;
+
 import com.epam.lab.library.domain.Role;
+
 import com.epam.lab.library.domain.Status;
 
 import javax.servlet.ServletException;
@@ -18,12 +20,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+
 import java.util.stream.Collectors;
 
 @WebServlet(loadOnStartup = 1)
@@ -53,7 +57,9 @@ public class ItemController extends HttpServlet {
             e.printStackTrace();
         }
 
+
         req.getRequestDispatcher("/WEB-INF/views/items.jsp").forward(req, resp);
+
 
     }
 
