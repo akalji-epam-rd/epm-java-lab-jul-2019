@@ -97,6 +97,19 @@ public class RoleDaoImpl implements RoleDao {
         String name = role.getName();
 
         try {
+            List<Role> list = getAll();
+            for (Role readyRole : list) {
+                String readyRoleName = readyRole.getName();
+                if (readyRoleName.equals(name)) {
+                    return readyRole.getId();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
             connection = pool.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(insertSql);
@@ -147,9 +160,10 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     /**
-     * Method deletes record with current id in DB
+     * Method deletes role with current id in DB
      *
-     * @param id ID of record to delete
+     * @param id ID of role to delete
+
      * @return Delete result
      */
     @Override

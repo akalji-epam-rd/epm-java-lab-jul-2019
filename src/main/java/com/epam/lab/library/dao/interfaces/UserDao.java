@@ -7,15 +7,16 @@ import java.util.List;
 
 public interface UserDao {
 
-    User get(int id);
+    User getById(int id);
 
     List<User> getAll();
 
-    int save(User user);
+    Integer save(User user);
 
-    int update(User user);
+    Integer update(User user);
 
-    int delete(int id);
+    boolean delete(int id);
+
 
 
 }

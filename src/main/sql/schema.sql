@@ -1,3 +1,5 @@
+DROP SCHEMA library CASCADE;
+
 CREATE SCHEMA library;
 
 CREATE TABLE library.users (
