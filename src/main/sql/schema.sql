@@ -1,3 +1,5 @@
+DROP SCHEMA library;
+
 CREATE SCHEMA library;
 
 CREATE TABLE library.users (
