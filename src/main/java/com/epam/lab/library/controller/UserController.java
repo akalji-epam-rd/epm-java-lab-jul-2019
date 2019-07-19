@@ -23,7 +23,6 @@ public class UserController extends HttpServlet {
     UserService service = new UserService();
 
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] info = resolver.getViewPath(request);
