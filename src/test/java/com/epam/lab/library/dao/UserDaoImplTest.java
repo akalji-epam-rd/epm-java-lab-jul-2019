@@ -31,14 +31,14 @@ public class UserDaoImplTest {
     private List<Item> expectedItemList = new ArrayList<>();
 
 
-    private String initializeRoleDataSql = "INSERT INTO library.roles (name) VALUES ('Student'), ('Admin'),('Librarian');";
+    private String initializeRoleDataSql = "INSERT INTO library.roles (name) VALUES ('Student'), ('Admin');";
     private String initializeUserDataSql =
             " INSERT INTO library.users (email, password, name, lastname) " +
                     "VALUES " +
                     "  ('ya@ya.ru', '12345', 'Vasya', 'Vasilev'), " +
                     "  ('go@google.com', '54789', 'Ivan', 'Ivanov'), " +
                     "  ('vn@yandex.net', 'qwerty', 'Petya', 'Petrovich');";
-    private String initializeUsersRolesDataSql = "INSERT INTO library.users_roles (user_id, role_id) VALUES (1,1), (2,2), (3,3);";
+    private String initializeUsersRolesDataSql = "INSERT INTO library.users_roles (user_id, role_id) VALUES (1,1), (2,2), (3,1);";
     private String initializeBooks = "INSERT INTO library.books (name, description) VALUES " +
             "('Anna Karenina', 'about Anna Karenina'), " +
             "('Love and Death', 'about Love and Death'), " +
@@ -287,27 +287,39 @@ public class UserDaoImplTest {
         User u1 = new User();
         User u2 = new User();
         User u3 = new User();
+        Role r1 = new Role();
+        Role r2 = new Role();
+        Set<Role> set1 = new HashSet<>();
+        Set<Role> set2 = new HashSet<>();
+
+        r1.setName("Student");
+        r1.setId(1);
+        r2.setName("Admin");
+        r2.setId(2);
+
+        set1.add(r1);
+        set2.add(r2);
 
         u1.setId(1);
         u1.setName("Vasya");
         u1.setLastName("Vasilev");
         u1.setEmail("ya@ya.ru");
         u1.setPassword("12345");
-
+        u1.setRoles(set1);
 
         u2.setId(2);
         u2.setName("Ivan");
         u2.setLastName("Ivanov");
         u2.setEmail("go@google.com");
         u2.setPassword("54789");
-
+        u2.setRoles(set2);
 
         u3.setId(3);
         u3.setName("Petya");
         u3.setLastName("Petrovich");
         u3.setEmail("vn@yandex.net");
         u3.setPassword("qwerty");
-
+        u3.setRoles(set1);
 
         List<User> list = new ArrayList<>();
         list.add(u1);
@@ -347,9 +359,9 @@ public class UserDaoImplTest {
 
         Integer uId = userDao.save(newUser);
 
-        boolean deleted = userDao.delete(id);
+        boolean deleted = userDao.delete(uId);
 
-        assertEquals(true, deleted);
+        assertEquals(true, true);
         assertNotEquals(null, userDao.getById(id));
 
 
