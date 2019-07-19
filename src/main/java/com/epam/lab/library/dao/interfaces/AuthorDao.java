@@ -2,19 +2,20 @@ package com.epam.lab.library.dao.interfaces;
 
 import com.epam.lab.library.domain.Author;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface AuthorDao {
 
-    List<Author> getAll();
+    List<Author> getAll() throws SQLException;
 
-    Author getById(int id);
+    Author getById(int id) throws SQLException;
 
-    Integer save(Author author);
+    Integer save(Author author) throws SQLException;
 
-    Integer update(Author author);
+    Integer update(Author author) throws SQLException;
 
-    boolean delete(Author author);
+    boolean delete(Author author) throws SQLException;
 
     @Deprecated
     void deleteAll();

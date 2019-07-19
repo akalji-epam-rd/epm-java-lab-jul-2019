@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name = "AuthorController", urlPatterns = "/author/*", loadOnStartup = 1)
@@ -22,7 +23,12 @@ public class AuthorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<Author> authors = authorDao.getAll();
+        List<Author> authors = null;
+        try {
+            authors = authorDao.getAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         request.setAttribute("authors", authors);
         request.getRequestDispatcher(resolver.getViewPath(request)[1]).forward(request, response);
     }

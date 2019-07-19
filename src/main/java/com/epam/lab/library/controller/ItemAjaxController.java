@@ -92,13 +92,13 @@ public class ItemAjaxController extends HttpServlet {
 
 
         Item item = new Item();
-        item.setId(itemId);
-        item.setBook(bookDao.getById(bookId));
-        item.setUser(userId != null ? userDao.getById(userId) : null);
-        item.setStatus(statusesDao.getById(statusId));
-        item.setDate(new Date(new java.util.Date().getTime()));
 
         try {
+            item.setId(itemId);
+            item.setBook(bookDao.getById(bookId));
+            item.setUser(userId != null ? userDao.getById(userId) : null);
+            item.setStatus(statusesDao.getById(statusId));
+            item.setDate(new Date(new java.util.Date().getTime()));
             Integer id;
             if (itemId != null && itemId > 0) {
                 id = itemDao.update(item);
