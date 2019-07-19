@@ -154,20 +154,9 @@
 
 <body>
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Library</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="<c:url value='/book/all'/>">Books</a></li>
-            <li><a href="<c:url value='/allItems'/>">Items</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="<c:url value='/logout'/>"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
-        </ul>
-    </div>
-</nav>
+<jsp:include page='/WEB-INF/views/header.jsp'>
+    <jsp:param name="articleId" value=""/>
+</jsp:include>
 
 <div class="container">
     <h2>Library items</h2>
