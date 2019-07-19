@@ -21,7 +21,7 @@
 
         <ul class="nav navbar-nav">
             <li><a href="<c:url value='/book/all'/>">Books</a></li>
-            <li><a href="<c:url value='/allItems'/>">Items</a></li>
+            <li><a href="<c:url value='/item/all'/>">Items</a></li>
             <li><a href="<c:url value='/user/all'/>">Users</a></li>
         </ul>
 

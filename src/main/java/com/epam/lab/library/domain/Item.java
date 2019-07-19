@@ -1,7 +1,6 @@
 package com.epam.lab.library.domain;
 
 import org.json.JSONObject;
-
 import java.sql.Date;
 
 public class Item {
@@ -11,6 +10,17 @@ public class Item {
     private User user;
     private Status status;
     private Date date;
+
+    public Item() {
+    }
+
+    public Item(Integer id, Book book, User user, Status status) {
+        this.id = id;
+        this.book = book;
+        this.user = user;
+        this.status = status;
+        this.date = new Date(new java.util.Date().getTime());
+    }
 
     public Integer getId() {
         return id;
@@ -99,6 +109,5 @@ public class Item {
         item.put("date", this.date);
 
         return item;
-
     }
 }
