@@ -1,4 +1,5 @@
 INSERT INTO library.statuses (name)
-VALUES('taken'),
-('not taken'),
-('reading room');
+VALUES ('available'),
+  ('on hands'),
+  ('in reading room'),
+  ('ordered');

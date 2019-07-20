@@ -14,7 +14,7 @@
 
     <servlet-mapping>
         <servlet-name>ItemsServlet</servlet-name>
-        <url-pattern>/allItems</url-pattern>
+        <url-pattern>/item/all</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -29,7 +29,7 @@
 
     <filter>
         <filter-name>AuthFilter</filter-name>
-        <filter-class>com.epam.lab.library.AuthFilter</filter-class>
+        <filter-class>com.epam.lab.library.auth.AuthFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -40,7 +40,7 @@
 
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>com.epam.lab.library.LogoutServlet</servlet-class>
+        <servlet-class>com.epam.lab.library.controller.LogoutController</servlet-class>
     </servlet>
 
     <servlet-mapping>

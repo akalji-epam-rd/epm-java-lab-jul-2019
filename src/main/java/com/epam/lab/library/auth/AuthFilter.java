@@ -1,31 +1,19 @@
-package com.epam.lab.library;
+package com.epam.lab.library.auth;
 
 
-import com.epam.lab.library.dao.UserDaoImpl;
 import com.epam.lab.library.dao.interfaces.UserDao;
-import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.domain.User;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.nonNull;
 
 public class AuthFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -51,7 +39,7 @@ public class AuthFilter implements Filter {
 
             filterChain.doFilter(req, res);
 
-        } else if (userIsExist(email, password, req.getSession(), userDao.get())) {
+        } else if (isUserExist(email, password, req.getSession(), userDao.get())) {
 
             res.sendRedirect("/book/all");
 
@@ -63,12 +51,7 @@ public class AuthFilter implements Filter {
 
     }
 
-    @Override
-    public void destroy() {
-
-    }
-
-    private boolean userIsExist(String email, String password, HttpSession session, UserDao userDao) {
+    private boolean isUserExist(String email, String password, HttpSession session, UserDao userDao) {
 
         List<User> userList = userDao.getAll();
 
