@@ -9,6 +9,8 @@ import com.epam.lab.library.domain.Status;
 import com.epam.lab.library.domain.User;
 import com.epam.lab.library.util.filter.ItemFilter;
 import com.epam.lab.library.util.pagination.Paging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class ItemDaoImpl implements ItemDao {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ItemDaoImpl.class);
     private ConnectionPool pool = ConnectionPool.getInstance();
 
     private String saveSql = "INSERT INTO library.items(book_id, user_id, status_id, date_items)" +
@@ -51,6 +54,13 @@ public class ItemDaoImpl implements ItemDao {
             "LEFT JOIN library.statuses s ON i.status_id = s.id " +
             "WHERE 1=1 ";
 
+    /**
+     * Save item to the store
+     * @param item - library item
+     * @return id of saved element
+     * @throws SQLException - if something wrong with connection or
+     *          executing query
+     */
     @Override
     public Integer save(Item item) throws SQLException {
 
@@ -74,7 +84,7 @@ public class ItemDaoImpl implements ItemDao {
             }
             conn.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
             conn.rollback();
         } finally {
             conn.setAutoCommit(true);
@@ -84,6 +94,13 @@ public class ItemDaoImpl implements ItemDao {
         return id;
     }
 
+    /**
+     * Update item to the store
+     * @param item - library item
+     * @return id of updated element
+     * @throws SQLException - if something wrong with connection or
+     *          executing query
+     */
     @Override
     public Integer update(Item item) throws SQLException {
 
@@ -108,7 +125,7 @@ public class ItemDaoImpl implements ItemDao {
             }
             conn.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
             conn.rollback();
         } finally {
             conn.setAutoCommit(true);
@@ -118,6 +135,13 @@ public class ItemDaoImpl implements ItemDao {
         return id;
     }
 
+    /**
+     * delete item from store
+     * @param item - library item
+     * @return <tt>true</tt> if delete was successful
+     * @throws SQLException - if something wrong with connection or
+     *          executing query
+     */
     @Override
     public boolean delete(Item item) throws SQLException {
 
@@ -132,7 +156,7 @@ public class ItemDaoImpl implements ItemDao {
             conn.commit();
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
             conn.rollback();
         } finally {
             conn.setAutoCommit(true);
@@ -143,15 +167,23 @@ public class ItemDaoImpl implements ItemDao {
     }
 
 
+    /**
+     * return list of items with filter and pagination
+     * @param filter - item filter setting
+     * @param paging - pagination settings
+     * @return list of items with filter and pagination
+     * @throws SQLException - if something wrong with connection or
+     *          executing query
+     */
     @Override
-    public List<Item> getAll(ItemFilter filter, Paging pagination) throws SQLException {
+    public List<Item> getAll(ItemFilter filter, Paging paging) throws SQLException {
 
         List<Item> itemList = new ArrayList<>();
         Connection conn = pool.getConnection();
         Statement st = conn.createStatement();
 
         String appendFilter = selectAllSql + appendFilter(filter);
-        String paginationSql = appendFilter + appendPagination(pagination);
+        String paginationSql = appendFilter + appendPagination(paging);
 
         try (ResultSet rs = st.executeQuery(paginationSql)) {
             while (rs.next()) {
@@ -176,16 +208,14 @@ public class ItemDaoImpl implements ItemDao {
                 item.setStatus(status);
                 itemList.add(item);
             }
-
             return itemList;
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } finally {
             pool.releaseConnection(conn);
         }
 
-        return null;
+        return itemList;
     }
 
     private String appendFilter(ItemFilter filter) {
@@ -228,10 +258,11 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     /**
-     *
-     * @param id
-     * @return
-     * @throws SQLException
+     * return item by id form the store
+     * @param id - item's id
+     * @return return item by id form the store
+     * @throws SQLException - if something wrong with connection or
+     *          executing query
      */
     @Override
     public Item getById(Integer id) throws SQLException {
@@ -261,11 +292,10 @@ public class ItemDaoImpl implements ItemDao {
                 item.setUser(user);
                 item.setBook(book);
                 item.setStatus(status);
-
                 return item;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } finally {
             pool.releaseConnection(conn);
         }
@@ -273,6 +303,13 @@ public class ItemDaoImpl implements ItemDao {
         return null;
     }
 
+    /**
+     * return number of queried rows from table with filter
+     * @param filter - item filter
+     * @return number of queried rows from table with filter
+     * @throws SQLException - if something wrong with connection or
+     *          executing query
+     */
     @Override
     public Integer getTotal(ItemFilter filter) throws SQLException {
 
@@ -288,7 +325,7 @@ public class ItemDaoImpl implements ItemDao {
                 total = rs.getInt("count");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } finally {
             pool.releaseConnection(conn);
         }
