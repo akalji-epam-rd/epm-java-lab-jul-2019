@@ -11,7 +11,7 @@ import com.epam.lab.library.dao.interfaces.UserDao;
 import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.domain.Item;
 import com.epam.lab.library.domain.Status;
-
+import com.epam.lab.library.util.pagination.Paging;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,7 +30,6 @@ public class ItemController extends HttpServlet {
     private UserDao userDao = new UserDaoImpl();
     private StatusesDao statusesDao = new StatusesDaoImpl();
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
@@ -42,17 +41,14 @@ public class ItemController extends HttpServlet {
             req.setAttribute("statuses", statusesDao.getAll()
                     .stream().sorted(Comparator.comparingInt(Status::getId))
                     .collect(Collectors.toList()));
-            req.setAttribute("items", itemDao.getAll()
+            req.setAttribute("items", itemDao.getAll(null, new Paging())
                     .stream().sorted(Comparator.comparingInt(Item::getId))
                     .collect(Collectors.toList()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-
-        req.getRequestDispatcher("/WEB-INF/views/items.jsp").forward(req, resp);
-
-
+        req.getRequestDispatcher("/WEB-INF/views/item/all.jsp").forward(req, resp);
     }
 
     @Override

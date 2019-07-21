@@ -1,4 +1,4 @@
-DROP SCHEMA library CASCADE;
+DROP SCHEMA library;
 
 CREATE SCHEMA library;
 

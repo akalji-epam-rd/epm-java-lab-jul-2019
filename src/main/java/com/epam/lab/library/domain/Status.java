@@ -2,11 +2,17 @@ package com.epam.lab.library.domain;
 
 import org.json.JSONObject;
 
-
 public class Status {
 
     private Integer id;
     private String name;
+
+    public Status() {
+    }
+
+    public Status(Integer id) {
+        this.id = id;
+    }
 
     public Integer getId() {
         return id;
@@ -50,5 +56,13 @@ public class Status {
         book.put("name", this.name);
 
         return book;
+    }
+
+    @Override
+    public String toString() {
+        return "Status{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

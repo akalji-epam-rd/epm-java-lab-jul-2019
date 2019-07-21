@@ -7,9 +7,9 @@ import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.domain.Item;
 import com.epam.lab.library.domain.Status;
 import com.epam.lab.library.domain.User;
-
+import com.epam.lab.library.util.filter.ItemFilter;
+import com.epam.lab.library.util.pagination.Paging;
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +48,8 @@ public class ItemDaoImpl implements ItemDao {
             "library.items i " +
             "LEFT JOIN library.users u ON i.user_id = u.id " +
             "LEFT JOIN library.books b ON i.book_id = b.id " +
-            "LEFT JOIN library.statuses s ON i.status_id = s.id";
+            "LEFT JOIN library.statuses s ON i.status_id = s.id " +
+            "WHERE 1=1 ";
 
     @Override
     public Integer save(Item item) throws SQLException {
@@ -72,7 +73,6 @@ public class ItemDaoImpl implements ItemDao {
                 id = rs.getInt(1);
             }
             conn.commit();
-            System.out.println("Save item with id: " + id + " was successful");
         } catch (SQLException e) {
             e.printStackTrace();
             conn.rollback();
@@ -82,7 +82,6 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         return id;
-
     }
 
     @Override
@@ -108,7 +107,6 @@ public class ItemDaoImpl implements ItemDao {
                 id = rs.getInt(1);
             }
             conn.commit();
-            System.out.println("Update item with id: " + id + " was successful");
         } catch (SQLException e) {
             e.printStackTrace();
             conn.rollback();
@@ -132,7 +130,6 @@ public class ItemDaoImpl implements ItemDao {
         try {
             ps.execute();
             conn.commit();
-            System.out.println("Delete item with id: " + item.getId() + " was successful");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,13 +144,16 @@ public class ItemDaoImpl implements ItemDao {
 
 
     @Override
-    public List<Item> getAll() throws SQLException {
+    public List<Item> getAll(ItemFilter filter, Paging pagination) throws SQLException {
 
         List<Item> itemList = new ArrayList<>();
         Connection conn = pool.getConnection();
         Statement st = conn.createStatement();
 
-        try (ResultSet rs = st.executeQuery(selectAllSql)) {
+        String appendFilter = selectAllSql + appendFilter(filter);
+        String paginationSql = appendFilter + appendPagination(pagination);
+
+        try (ResultSet rs = st.executeQuery(paginationSql)) {
             while (rs.next()) {
                 User user = new User();
                 user.setId(rs.getInt("user_id"));
@@ -186,6 +186,45 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         return null;
+    }
+
+    private String appendFilter(ItemFilter filter) {
+
+        String filterSql = "";
+        if (filter == null) {
+            return filterSql;
+        }
+
+        if (filter.getStatus() != null) {
+            Integer statusId = filter.getStatus().getId();
+            filterSql += "AND s.id = " + statusId + " ";
+        }
+
+        if (filter.getBook() != null) {
+            Integer bookId = filter.getBook().getId();
+            filterSql += "AND b.id = " + bookId + " ";
+        }
+
+        if (filter.getUser() != null) {
+            Integer userId = filter.getUser().getId();
+            filterSql += "AND u.id = " + userId + " ";
+        }
+
+        return filterSql;
+    }
+
+    private String appendPagination(Paging paging) {
+
+        if (paging == null) {
+            return "";
+        }
+
+        int limit = paging.getCountPerPage();
+
+        int start = paging.getPageNumber() * paging.getCountPerPage() - 10;
+
+        // ORDER BY added to query because of using OFFSET and LIMIT make strange returning query
+        return " ORDER BY i.id ASC OFFSET " + start + " LIMIT " + limit + ";";
     }
 
     /**
@@ -232,5 +271,28 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         return null;
+    }
+
+    @Override
+    public Integer getTotal(ItemFilter filter) throws SQLException {
+
+        Connection conn = pool.getConnection();
+        Statement st = conn.createStatement();
+
+        String sql = "SELECT COUNT(i.id) FROM library.items i WHERE 1=1 ";
+        String filteredSql = sql + appendFilter(filter);
+        int total = 0;
+
+        try (ResultSet rs = st.executeQuery(filteredSql)) {
+            if (rs.next()) {
+                total = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            pool.releaseConnection(conn);
+        }
+
+        return total;
     }
 }

@@ -7,9 +7,12 @@ import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.domain.Item;
 import com.epam.lab.library.domain.Status;
 import com.epam.lab.library.domain.User;
+import com.epam.lab.library.util.pagination.Paging;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
@@ -52,8 +55,23 @@ public class ItemDaoImplTest {
     private Item newItem;
     private Item updatedItem;
 
+    private static ItemDao itemDaoMock;
+    private static List<Item> itemMockList;
+
+    @BeforeClass
+    public static void inizilizeMockData() throws SQLException{
+        itemMockList = getItemMockList();
+        itemDaoMock = Mockito.mock(ItemDao.class);
+        Mockito.when(itemDaoMock.getAll(null, new Paging())).thenReturn(itemMockList);
+
+    }
+
+
+
+
     @Before
     public void initializeDbData() throws SQLException {
+
         Statement st = null;
         try {
             conn = pool.getConnection();
@@ -268,9 +286,9 @@ public class ItemDaoImplTest {
 
     @Test
     public void getAll() throws Exception {
-        List<Item> itemList = itemDao.getAll();
+        List<Item> itemList = itemDaoMock.getAll(null, new Paging());
 
-        assertEquals(expectedItemList, itemList);
+        assertEquals(itemMockList, itemList);
         assertNotEquals(new ArrayList<Item>(), itemList);
     }
 
@@ -282,6 +300,75 @@ public class ItemDaoImplTest {
         assertEquals(item, expectedItemList.get(0));
         assertNotEquals(item, expectedItemList.get(1));
 
+    }
+
+    private static List<Item> getItemMockList() {
+
+        List<Item> itemList = new ArrayList<>();
+
+        // create books for items
+        Book book1 = new Book(1);
+        book1.setName("Anna Karenina");
+        book1.setDescription("about Anna Karenina");
+        Book book2 = new Book(2);
+        book2.setName("Love and Death");
+        book2.setDescription("about Love and Death");
+        Book book3 = new Book(3);
+        book3.setName("Dogs");
+        book3.setDescription("about dogs");
+
+        // create users for items
+        User user1 = new User(1);
+        user1.setEmail("ya@ya.ru");
+        user1.setPassword("12345");
+        user1.setName("Vasya");
+        user1.setLastName("Vasilev");
+        User user2 = new User(2);
+        user2.setEmail("go@google.com");
+        user2.setPassword("54789");
+        user2.setName("Ivan");
+        user2.setLastName("Ivanov");
+        User user3 = new User(3);
+        user3.setEmail("vn@yandex.net");
+        user3.setPassword("qwerty");
+        user3.setName("Petya");
+        user3.setLastName("Petrovich");
+
+        // create statuses for items
+        Status status1 = new Status();
+        status1.setId(1);
+        status1.setName("taken");
+        Status status2 = new Status();
+        status2.setId(2);
+        status2.setName("not taken");
+        Status status3 = new Status();
+        status3.setId(3);
+        status3.setName("reading room");
+
+        //create items and itemList
+        Item item1 = new Item();
+        item1.setId(1);
+        item1.setBook(book1);
+        item1.setUser(user1);
+        item1.setStatus(status1);
+
+        Item item2 = new Item();
+        item2.setId(2);
+        item2.setBook(book2);
+        item2.setUser(user2);
+        item2.setStatus(status2);
+
+        Item item3 = new Item();
+        item3.setId(3);
+        item3.setBook(book3);
+        item3.setUser(user3);
+        item3.setStatus(status3);
+
+        itemList.add(item1);
+        itemList.add(item2);
+        itemList.add(item3);
+
+        return itemList;
     }
 
 
