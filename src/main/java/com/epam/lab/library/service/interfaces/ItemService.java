@@ -1,5 +1,6 @@
 package com.epam.lab.library.service.interfaces;
 
+import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.domain.Item;
 import com.epam.lab.library.domain.Status;
 import com.epam.lab.library.domain.User;
@@ -22,6 +23,8 @@ public interface ItemService {
     Pagination<Item> getAllPaginationItems(ItemFilter filter, Paging paging) throws SQLException;
 
     Item getById(Integer id) throws SQLException;
+
+    boolean orderBook(Book book, User user) throws SQLException;
 
     boolean orderItem(Item item, User user) throws SQLException;
 

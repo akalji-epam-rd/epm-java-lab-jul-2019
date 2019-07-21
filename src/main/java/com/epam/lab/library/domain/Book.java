@@ -81,6 +81,10 @@ public class Book {
                 '}';
     }
 
+    /**
+     * convert item to json object
+     * @return json object
+     */
     public JSONObject getAsJson() {
 
         JSONObject book = new JSONObject();

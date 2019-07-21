@@ -113,6 +113,10 @@ public class User {
                 '}';
     }
 
+    /**
+     * convert item to json object
+     * @return json object
+     */
     public JSONObject getAsJson() {
         JSONObject user = new JSONObject();
 
