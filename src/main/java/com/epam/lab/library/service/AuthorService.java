@@ -15,6 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Author service layer class
+ */
 public class AuthorService {
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
@@ -48,6 +51,7 @@ public class AuthorService {
 
     /**
      * Creates record in table books and respective records in table authors_books
+     *
      * @param author
      * @return true if save have been successful and false if not
      */
@@ -89,6 +93,7 @@ public class AuthorService {
 
     /**
      * try to update author's data
+     *
      * @param author
      * @return true if update was completed and false if not
      */
@@ -108,6 +113,7 @@ public class AuthorService {
 
     /**
      * Try to delete author without books from database
+     *
      * @param author
      * @return true if deletion was completed and false if not
      */

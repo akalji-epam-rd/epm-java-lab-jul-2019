@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
+/**
+ * Logout queries control
+ * */
 public class LogoutController extends HttpServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogoutController.class);

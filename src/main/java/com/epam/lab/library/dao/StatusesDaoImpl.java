@@ -3,16 +3,25 @@ package com.epam.lab.library.dao;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.interfaces.StatusesDao;
 import com.epam.lab.library.domain.Status;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Item statuses data access object
+ */
 public class StatusesDaoImpl implements StatusesDao {
 
     ConnectionPool pool = ConnectionPool.getInstance();
     private String selectSql = "SELECT s.id, s.name FROM library.statuses s WHERE id = ?";
     private String selectAllSql = "SELECT s.id, s.name FROM library.statuses s";
 
+    /**
+     * Method returns list of all item`s statuses
+     *
+     * @return Statuses list
+     */
     @Override
     public List<Status> getAll() {
 
@@ -36,10 +45,15 @@ public class StatusesDaoImpl implements StatusesDao {
         } finally {
             pool.releaseConnection(conn);
         }
-
         return statusList;
     }
 
+    /**
+     * Method returns status for current id
+     *
+     * @param id Status id
+     * @return Status object
+     */
     @Override
     public Status getById(Integer id) {
 

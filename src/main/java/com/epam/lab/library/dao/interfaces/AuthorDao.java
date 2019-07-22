@@ -5,6 +5,9 @@ import com.epam.lab.library.domain.Author;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Author data access object
+ */
 public interface AuthorDao {
 
     List<Author> getAll() throws SQLException;

@@ -3,9 +3,13 @@ package com.epam.lab.library.dao.interfaces;
 import com.epam.lab.library.domain.Item;
 import com.epam.lab.library.util.filter.ItemFilter;
 import com.epam.lab.library.util.pagination.Paging;
+
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Item data access object
+ */
 public interface ItemDao {
 
     Integer save(Item item) throws SQLException;

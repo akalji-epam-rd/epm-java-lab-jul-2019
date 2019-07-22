@@ -1,11 +1,15 @@
 package com.epam.lab.library.controller;
 
-import com.epam.lab.library.dao.UserDaoImpl;
-import com.epam.lab.library.dao.interfaces.UserDao;
+import com.epam.lab.library.dao.RoleDaoImpl;
+import com.epam.lab.library.dao.interfaces.RoleDao;
 import com.epam.lab.library.domain.Role;
-import com.epam.lab.library.service.UserService;
+import com.epam.lab.library.domain.User;
+import com.epam.lab.library.service.UserServiceImpl;
+import com.epam.lab.library.service.interfaces.UserService;
 import com.epam.lab.library.util.RoleUtil;
-import com.epam.lab.library.util.ViewResolver;
+import com.epam.lab.library.util.pagination.Paging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,40 +18,42 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-@WebServlet(name = "UserController", urlPatterns = "/user/*", loadOnStartup = 1)
+/**
+ * User controller class
+ * */
+@WebServlet(loadOnStartup = 1)
 public class UserController extends HttpServlet {
 
-    ViewResolver resolver = new ViewResolver();
-    UserDao userDao = new UserDaoImpl();
-    UserService service = new UserService();
-
+    private static final Logger LOG = LoggerFactory.getLogger(ItemController.class);
+    private UserService userService = new UserServiceImpl();
+    private RoleDao rolesDao = new RoleDaoImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         @SuppressWarnings("unchecked")
-        Set<Role> roles = (HashSet)session.getAttribute("roles");
+        Set<Role> roles = (HashSet) session.getAttribute("roles");
+
         boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
+        if (!hasAdminRole) {
+            return;
+        }
         request.setAttribute("hasAdminRole", hasAdminRole);
 
-        String[] info = resolver.getViewPath(request);
-        String type = info[0];
-        String view = info[1];
-        switch (type) {
-            case "all":
-                request.setAttribute("users", userDao.getAll());
-                request.getRequestDispatcher(view).forward(request, response);
-                break;
+        try {
+            request.setAttribute("users", userService.getAll(new Paging())
+                    .stream().sorted(Comparator.comparingInt(User::getId))
+                    .collect(Collectors.toList()));
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
         }
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getRequestDispatcher("/WEB-INF/views/item/all.jsp").forward(request, response);
     }
 }

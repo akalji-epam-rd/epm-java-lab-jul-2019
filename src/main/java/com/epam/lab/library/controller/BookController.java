@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Book controller class
+ **/
 @WebServlet(name = "BookController", urlPatterns = "/book/*", loadOnStartup = 1)
 public class BookController extends HttpServlet {
 

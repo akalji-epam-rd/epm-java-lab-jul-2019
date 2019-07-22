@@ -7,9 +7,13 @@ import com.epam.lab.library.domain.User;
 import com.epam.lab.library.util.filter.ItemFilter;
 import com.epam.lab.library.util.pagination.Pagination;
 import com.epam.lab.library.util.pagination.Paging;
+
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Service layer object for items
+ */
 public interface ItemService {
 
     Integer save(Item item) throws SQLException;

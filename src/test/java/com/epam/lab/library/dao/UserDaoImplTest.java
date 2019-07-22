@@ -30,7 +30,6 @@ public class UserDaoImplTest {
     private User updatedUser;
     private List<Item> expectedItemList = new ArrayList<>();
 
-
     private String initializeRoleDataSql = "INSERT INTO library.roles (name) VALUES ('Student'), ('Admin');";
     private String initializeUserDataSql =
             " INSERT INTO library.users (email, password, name, lastname) " +
@@ -217,7 +216,6 @@ public class UserDaoImplTest {
         }
 
 
-
     }
 
     @After
@@ -363,9 +361,5 @@ public class UserDaoImplTest {
 
         assertEquals(true, true);
         assertNotEquals(null, userDao.getById(id));
-
-
     }
-
-
 }

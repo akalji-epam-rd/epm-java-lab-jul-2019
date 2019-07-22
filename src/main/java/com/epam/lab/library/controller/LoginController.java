@@ -5,6 +5,7 @@ import com.epam.lab.library.dao.interfaces.UserDao;
 import com.epam.lab.library.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Login queries control
+ */
 public class LoginController extends HttpServlet {
 
     private UserDao userDao = new UserDaoImpl();
