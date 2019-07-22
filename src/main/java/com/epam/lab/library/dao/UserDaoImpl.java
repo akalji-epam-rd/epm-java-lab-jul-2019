@@ -9,11 +9,10 @@ import com.epam.lab.library.domain.Role;
 
 import com.epam.lab.library.domain.User;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +23,7 @@ import java.util.Set;
 public class UserDaoImpl implements UserDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(AuthorDaoImpl.class);
 
     private RoleDao roleDao = new RoleDaoImpl();
 
@@ -87,6 +87,58 @@ public class UserDaoImpl implements UserDao {
         } finally {
             pool.releaseConnection(connection);
         }
+        return null;
+    }
+
+
+    /**
+     *
+     * @param email
+     * @return user with given email
+     * @throws SQLException
+     */
+    @Override
+    public User getByEmail(String email) throws SQLException {
+
+        Connection connection = pool.getConnection();
+
+        String query = "SELECT u.id, u.name, u.lastname, u.email, u.password, ro.id AS role_id, ro.name AS role_name " +
+                "FROM library.users u " +
+                "LEFT JOIN library.users_roles ur ON u.id = ur.user_id " +
+                "LEFT JOIN library.roles ro ON ur.role_id = ro.id " +
+                "WHERE u.email = ?";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        try (ResultSet resultSet = statement.executeQuery()) {
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            User user = new User();
+            user.setId(resultSet.getInt("id"))
+                    .setEmail(resultSet.getString("email"))
+                    .setPassword(resultSet.getString("password"))
+                    .setName(resultSet.getString("name"))
+                    .setLastName(resultSet.getString("lastname"));
+
+            Set<Role> roles = new HashSet<>();
+            do {
+                Role role = new Role();
+                role.setId(resultSet.getInt("role_id"))
+                        .setName(resultSet.getString("role_name"));
+                roles.add(role);
+            } while (resultSet.next());
+            user.setRoles(roles);
+
+            return user;
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+
         return null;
     }
 

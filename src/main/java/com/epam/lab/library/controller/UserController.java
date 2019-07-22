@@ -1,12 +1,9 @@
 package com.epam.lab.library.controller;
 
-import com.epam.lab.library.dao.BookDaoImpl;
 import com.epam.lab.library.dao.UserDaoImpl;
-import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.dao.interfaces.UserDao;
-import com.epam.lab.library.service.BookService;
 import com.epam.lab.library.service.UserService;
-import com.epam.lab.library.util.connectionpool.ViewResolver;
+import com.epam.lab.library.util.ViewResolver;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

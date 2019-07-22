@@ -26,21 +26,48 @@ public class AuthorDaoImpl implements AuthorDao {
     public List<Author> getAll() throws SQLException {
         Connection connection = pool.getConnection();
 
-        String query = "SELECT id, name, lastname FROM library.authors";
-        Statement statement = connection.createStatement();
+        String query = "SELECT authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname, " +
+                "books.id as b_id, books.name as b_name, description as b_description " +
+                "FROM library.authors " +
+                "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
+                "LEFT JOIN library.books ON authors_books.book_id = books.id ";
 
+        Statement statement = connection.createStatement();
         try (ResultSet resultSet = statement.executeQuery(query)) {
+
             List<Author> authors = new ArrayList<>();
+            ArrayList<Integer> identifies = new ArrayList<>();
 
             while (resultSet.next()) {
-                Author author = new Author();
-                author.setId(resultSet.getInt("id"))
-                        .setName(resultSet.getString("name"))
-                        .setLastName(resultSet.getString("lastname"));
-                authors.add(author);
+
+                Book book = new Book();
+                book.setId(resultSet.getInt("b_id"))
+                        .setName(resultSet.getString("b_name"))
+                        .setDescription(resultSet.getString("b_description"));
+
+                Integer authorId = resultSet.getInt("b_id");
+
+                if (identifies.contains(authorId)) {
+                    for (Author author : authors) {
+                        if (author.getId() == authorId) {
+                            author.getBooks().add(book);
+                        }
+                    }
+                } else {
+                    Author author = new Author();
+                    author.setId(resultSet.getInt("id"))
+                            .setName(resultSet.getString("name"))
+                            .setLastName(resultSet.getString("lastname"));
+                    Set<Book> books = new HashSet<>();
+                    books.add(book);
+                    author.setBooks(books);
+                    authors.add(author);
+                    identifies.add(authorId);
+                }
             }
 
             return authors;
+
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
         } finally {

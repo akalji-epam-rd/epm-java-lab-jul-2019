@@ -6,7 +6,7 @@
     <title>Books</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="../../../static/css/pretty.css">
-    <link rel="stylesheet" href="../../../static/css/bootstrap.min.css">
+    <%--<link rel="stylesheet" type="text/css" href="../../../static/css/bootstrap.min.css">--%>
 
 </head>
 
@@ -17,8 +17,8 @@
 </jsp:include>
 
 <div class="btnsLine">
-    <a class="frmBtn" href="/addProduct">Add new book</a>
-    <a class="frmBtn" href="/addCategory">Add new author</a>
+    <a class="frmBtn" href="/add">Add new book</a>
+    <a class="frmBtn" href="/author/add">Add new author</a>
 </div>
 
 <div>

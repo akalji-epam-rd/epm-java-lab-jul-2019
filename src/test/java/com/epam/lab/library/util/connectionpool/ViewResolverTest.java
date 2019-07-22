@@ -1,6 +1,7 @@
 package com.epam.lab.library.util.connectionpool;
 
 
+import com.epam.lab.library.util.ViewResolver;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;

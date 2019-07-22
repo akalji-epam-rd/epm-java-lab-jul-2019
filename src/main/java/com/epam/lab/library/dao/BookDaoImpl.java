@@ -36,34 +36,36 @@ public class BookDaoImpl implements BookDao {
         try (ResultSet resultSet = statement.executeQuery(query)) {
 
             List<Book> books = new ArrayList<>();
-            Book book = null;
-            Set<Author> authors = null;
-            Integer prevBookId = null;
+            ArrayList<Integer> identifies = new ArrayList<>();
 
             while (resultSet.next()) {
-                Integer currentBookId = resultSet.getInt("b_id");
-
-                if (!currentBookId.equals(prevBookId)) {
-                    prevBookId = resultSet.getInt("b_id");
-
-                    book = new Book();
-                    authors = new HashSet<>();
-                    book.setAuthors(authors);
-                    books.add(book);
-
-                    book.setId(prevBookId)
-                            .setName(resultSet.getString("b_name"))
-                            .setDescription(resultSet.getString("b_description"));
-                }
 
                 Author author = new Author();
                 author.setId(resultSet.getInt("a_id"))
                         .setName(resultSet.getString("a_name"))
                         .setLastName(resultSet.getString("a_lastname"));
-                authors.add(author);
+
+                Integer bookId = resultSet.getInt("b_id");
+
+                if (identifies.contains(bookId)) {
+                    for (Book book : books) {
+                        if (book.getId() == bookId) {
+                            book.getAuthors().add(author);
+                        }
+                    }
+                } else {
+                    Book book = new Book();
+                    book.setId(resultSet.getInt("b_id"))
+                            .setName(resultSet.getString("b_name"))
+                            .setDescription(resultSet.getString("b_description"));
+                    Set<Author> authors = new HashSet<>();
+                    authors.add(author);
+                    book.setAuthors(authors);
+                    books.add(book);
+                    identifies.add(bookId);
+                }
             }
 
-            resultSet.close();
             return books;
 
         } catch (SQLException e) {
@@ -71,7 +73,6 @@ public class BookDaoImpl implements BookDao {
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
