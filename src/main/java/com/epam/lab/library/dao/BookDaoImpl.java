@@ -14,12 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Book data access object
+ */
 //TODO put ResultSet in try with resources
 public class BookDaoImpl implements BookDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
     /**
+     * Get list of books
      *
      * @return list of all books from database
      */
@@ -37,10 +41,6 @@ public class BookDaoImpl implements BookDao {
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-
-            if (!resultSet.next()) {
-                return null;
-            }
 
             List<Book> books = new ArrayList<>();
 
@@ -79,11 +79,11 @@ public class BookDaoImpl implements BookDao {
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
+     * Get book by id
      *
      * @param id - identifier of book in database
      * @return Book with given id from database
@@ -132,12 +132,12 @@ public class BookDaoImpl implements BookDao {
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
      * Saves given book in database
+     *
      * @param book domain model for saving
      * @return id of saved book
      */
@@ -178,6 +178,7 @@ public class BookDaoImpl implements BookDao {
 
     /**
      * Updates given book
+     *
      * @param book domain model for updating
      * @return id of saved book if exists or null if not exist
      */
@@ -218,6 +219,7 @@ public class BookDaoImpl implements BookDao {
 
     /**
      * Deletes given book from database
+     *
      * @param book domain model for deleting
      * @return true if book have been deleted of false if not
      */
@@ -256,7 +258,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     /**
-     * Just delete all books from table
+     * Delete all books from table
      */
     @Override
     public void deleteAll() {

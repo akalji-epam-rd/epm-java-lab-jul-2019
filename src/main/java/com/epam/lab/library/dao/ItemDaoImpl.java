@@ -1,6 +1,5 @@
 package com.epam.lab.library.dao;
 
-
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.interfaces.ItemDao;
 import com.epam.lab.library.domain.Book;
@@ -11,11 +10,15 @@ import com.epam.lab.library.util.filter.ItemFilter;
 import com.epam.lab.library.util.pagination.Paging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Item data access object
+ */
 public class ItemDaoImpl implements ItemDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItemDaoImpl.class);
@@ -56,10 +59,11 @@ public class ItemDaoImpl implements ItemDao {
 
     /**
      * Save item to the store
+     *
      * @param item - library item
      * @return id of saved element
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Integer save(Item item) throws SQLException {
@@ -90,16 +94,16 @@ public class ItemDaoImpl implements ItemDao {
             conn.setAutoCommit(true);
             pool.releaseConnection(conn);
         }
-
         return id;
     }
 
     /**
      * Update item to the store
+     *
      * @param item - library item
      * @return id of updated element
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Integer update(Item item) throws SQLException {
@@ -131,16 +135,16 @@ public class ItemDaoImpl implements ItemDao {
             conn.setAutoCommit(true);
             pool.releaseConnection(conn);
         }
-
         return id;
     }
 
     /**
-     * delete item from store
+     * Delete item from store
+     *
      * @param item - library item
      * @return <tt>true</tt> if delete was successful
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public boolean delete(Item item) throws SQLException {
@@ -162,18 +166,18 @@ public class ItemDaoImpl implements ItemDao {
             conn.setAutoCommit(true);
             pool.releaseConnection(conn);
         }
-
         return false;
     }
 
 
     /**
-     * return list of items with filter and pagination
+     * Return list of items with filter and pagination
+     *
      * @param filter - item filter setting
      * @param paging - pagination settings
      * @return list of items with filter and pagination
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public List<Item> getAll(ItemFilter filter, Paging paging) throws SQLException {
@@ -214,7 +218,6 @@ public class ItemDaoImpl implements ItemDao {
         } finally {
             pool.releaseConnection(conn);
         }
-
         return itemList;
     }
 
@@ -239,7 +242,6 @@ public class ItemDaoImpl implements ItemDao {
             Integer userId = filter.getUser().getId();
             filterSql += "AND u.id = " + userId + " ";
         }
-
         return filterSql;
     }
 
@@ -258,11 +260,12 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     /**
-     * return item by id form the store
+     * Return item by id form the store
+     *
      * @param id - item's id
      * @return return item by id form the store
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Item getById(Integer id) throws SQLException {
@@ -299,16 +302,16 @@ public class ItemDaoImpl implements ItemDao {
         } finally {
             pool.releaseConnection(conn);
         }
-
         return null;
     }
 
     /**
      * return number of queried rows from table with filter
+     *
      * @param filter - item filter
      * @return number of queried rows from table with filter
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Integer getTotal(ItemFilter filter) throws SQLException {
@@ -329,7 +332,6 @@ public class ItemDaoImpl implements ItemDao {
         } finally {
             pool.releaseConnection(conn);
         }
-
         return total;
     }
 }

@@ -1,6 +1,5 @@
 package com.epam.lab.library.util.connectionpool;
 
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Connection pool class
+ */
 public class ConnectionPool {
 
     private static final int CAPACITY = 10;
@@ -17,9 +19,13 @@ public class ConnectionPool {
     private static String url = null;
     private static String user = null;
     private static String password = null;
-
     private static ConnectionPool instance;
 
+    /**
+     * Returns instance of connection pool
+     *
+     * @return Connection pool instance
+     */
     public static ConnectionPool getInstance() {
 
         ConnectionPool localInstance = instance;
@@ -45,7 +51,6 @@ public class ConnectionPool {
                 }
             }
 
-
             localInstance = instance;
             if (localInstance == null) {
                 instance = localInstance = new ConnectionPool();
@@ -58,7 +63,6 @@ public class ConnectionPool {
     }
 
     private static Connection createConnection(String url, String user, String password) throws SQLException {
-
         return DriverManager.getConnection(
                 url,
                 user,
@@ -88,8 +92,7 @@ public class ConnectionPool {
      *
      * @param connection
      */
-    public synchronized void  releaseConnection(Connection connection) {
-
+    public synchronized void releaseConnection(Connection connection) {
 
         try {
             if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
@@ -99,7 +102,7 @@ public class ConnectionPool {
                     e.printStackTrace();
                 }
 
-                    availableConnections.add(connection);
+                availableConnections.add(connection);
 
             } else {
                 try {

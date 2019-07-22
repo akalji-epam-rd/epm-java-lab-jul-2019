@@ -4,6 +4,9 @@ import com.epam.lab.library.domain.Book;
 
 import java.util.List;
 
+/**
+ * Book data access object
+ */
 public interface BookDao {
 
     List<Book> getAll();

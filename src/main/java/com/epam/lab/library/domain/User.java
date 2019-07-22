@@ -5,6 +5,9 @@ import org.json.JSONObject;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * User class
+ */
 public class User {
 
     private Integer id;
@@ -14,67 +17,148 @@ public class User {
     private String lastName;
     private Set<Role> roles;
 
+    /**
+     * Initializes a newly created User object
+     */
     public User() {
     }
 
+    /**
+     * Initializes a newly created User object with certain id
+     *
+     * @param id User id
+     */
     public User(int id) {
         this.id = id;
     }
 
+    /**
+     * Returns user id
+     *
+     * @return User id
+     */
     public Integer getId() {
         return id;
     }
 
+    /**
+     * Sets id of current user
+     *
+     * @param id Id number to set
+     * @return User object
+     */
     public User setId(Integer id) {
         this.id = id;
         return this;
     }
 
+    /**
+     * Returns user email
+     *
+     * @return Email of user
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets user email
+     *
+     * @param email Email
+     * @return User object
+     */
     public User setEmail(String email) {
         this.email = email;
         return this;
     }
 
+    /**
+     * Returns user password
+     *
+     * @return User password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Sets user password
+     *
+     * @param password User password
+     * @return User object
+     */
     public User setPassword(String password) {
         this.password = password;
         return this;
     }
 
+    /**
+     * Returns username
+     *
+     * @return User name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets user name
+     *
+     * @param name User name
+     * @return User object
+     */
     public User setName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Returns user last name
+     *
+     * @return User last name
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * Sets user name
+     *
+     * @param lastName User last name
+     * @return User object
+     */
     public User setLastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
 
+    /**
+     * Returns set of user roles
+     *
+     * @return User role set
+     */
     public Set<Role> getRoles() {
         return roles;
     }
 
+    /**
+     * Sets user roles
+     *
+     * @param roles User roles
+     * @return User object
+     */
     public User setRoles(Set<Role> roles) {
         this.roles = roles;
         return this;
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one
+     *
+     * @param o the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj
+     * argument; {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,11 +169,16 @@ public class User {
         if (!id.equals(user.id)) return false;
         if (!email.equals(user.email)) return false;
         if (!password.equals(user.password)) return false;
-        if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
-        return roles != null ? roles.equals(user.roles) : user.roles == null;
+        if (!Objects.equals(name, user.name)) return false;
+        if (!Objects.equals(lastName, user.lastName)) return false;
+        return Objects.equals(roles, user.roles);
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object.
+     */
     @Override
     public int hashCode() {
         int result = id.hashCode();
@@ -101,6 +190,11 @@ public class User {
         return result;
     }
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return "User{" +
@@ -115,6 +209,7 @@ public class User {
 
     /**
      * convert item to json object
+     *
      * @return json object
      */
     public JSONObject getAsJson() {

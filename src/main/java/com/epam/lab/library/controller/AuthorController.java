@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Class controlling author interaction
+ */
 @WebServlet(name = "AuthorController", urlPatterns = "/author/*", loadOnStartup = 1)
 public class AuthorController extends HttpServlet {
 
@@ -29,6 +32,5 @@ public class AuthorController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     }
 }

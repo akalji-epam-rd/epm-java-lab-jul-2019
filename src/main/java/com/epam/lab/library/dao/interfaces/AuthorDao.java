@@ -4,6 +4,9 @@ import com.epam.lab.library.domain.Author;
 
 import java.util.List;
 
+/**
+ * Author data access object
+ */
 public interface AuthorDao {
 
     List<Author> getAll();

@@ -6,6 +6,7 @@ import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.service.BookService;
 import com.epam.lab.library.util.RoleUtil;
 import com.epam.lab.library.util.connectionpool.ViewResolver;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class interacting with books
+ */
 @WebServlet(name = "BookController", urlPatterns = "/book/*", loadOnStartup = 1)
 public class BookController extends HttpServlet {
 
@@ -28,7 +32,7 @@ public class BookController extends HttpServlet {
 
         HttpSession session = request.getSession();
         @SuppressWarnings("unchecked")
-        Set<Role> roles = (HashSet)session.getAttribute("roles");
+        Set<Role> roles = (HashSet) session.getAttribute("roles");
         boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
         request.setAttribute("hasAdminRole", hasAdminRole);
 
@@ -41,11 +45,9 @@ public class BookController extends HttpServlet {
                 request.getRequestDispatcher(view).forward(request, response);
                 break;
         }
-
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     }
 }

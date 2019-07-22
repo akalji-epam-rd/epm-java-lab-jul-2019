@@ -1,6 +1,5 @@
 package com.epam.lab.library.dao;
 
-
 import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
@@ -15,12 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Author data access object
+ */
 //TODO put ResultSet in try with resources
 public class AuthorDaoImpl implements AuthorDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
 
     /**
+     * Returning list of authors
      *
      * @return list of all authors from database
      */
@@ -44,17 +47,16 @@ public class AuthorDaoImpl implements AuthorDao {
                 authors.add(author);
             }
             return authors;
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
+     * Get Author by id
      *
      * @param id - identifier of author in database
      * @return Book with given id from database
@@ -103,12 +105,12 @@ public class AuthorDaoImpl implements AuthorDao {
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
      * Saves given author in database
+     *
      * @param author domain model for saving
      * @return id of saved author
      */
@@ -138,7 +140,6 @@ public class AuthorDaoImpl implements AuthorDao {
                 resultSet.close();
                 return null;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -149,6 +150,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     /**
      * Updates given author
+     *
      * @param author domain model for updating
      * @return id of saved author if exists or null if not exist
      */
@@ -189,6 +191,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     /**
      * Deletes given author from database
+     *
      * @param author domain model for deleting
      * @return true if author have been deleted of false if not
      */
@@ -227,7 +230,7 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     /**
-     * Just delete all books from table
+     * Delete all books from table
      */
     @Override
     public void deleteAll() {

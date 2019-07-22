@@ -12,27 +12,40 @@ import com.epam.lab.library.service.interfaces.ItemService;
 import com.epam.lab.library.util.filter.ItemFilter;
 import com.epam.lab.library.util.pagination.Pagination;
 import com.epam.lab.library.util.pagination.Paging;
+
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Service layer object for items
+ */
 public class ItemServiceImpl implements ItemService {
 
     private ItemDao itemDao = new ItemDaoImpl();
     private StatusesDao statusesDao = new StatusesDaoImpl();
 
+    /**
+     * Initializes a newly created ItemServiceImpl object
+     */
     public ItemServiceImpl() {
     }
 
+    /**
+     * Initializes a newly created ItemServiceImpl object with certain itemDao
+     *
+     * @param itemDao ItemDao object
+     */
     public ItemServiceImpl(ItemDao itemDao) {
         this.itemDao = itemDao;
     }
 
     /**
      * Save item to the store
+     *
      * @param item - library item
      * @return id of saved element
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Integer save(Item item) throws SQLException {
@@ -41,14 +54,14 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * Update item to the store
+     *
      * @param item - library item
      * @return id of updated element
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Integer update(Item item) throws SQLException {
-
 
 
         return itemDao.update(item);
@@ -56,10 +69,11 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * delete item from store
+     *
      * @param item - library item
      * @return <tt>true</tt> if delete was successful
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public boolean delete(Item item) throws SQLException {
@@ -68,11 +82,12 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * return list of items with filter and pagination
+     *
      * @param filter - item filter setting
      * @param paging - pagination settings
      * @return list of items with filter and pagination
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public List<Item> getAll(ItemFilter filter, Paging paging) throws SQLException {
@@ -81,11 +96,12 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * return list of items with filter and additional information about pagination
+     *
      * @param filter - item filter setting
      * @param paging - pagination settings
      * @return list of items with filter and pagination
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     public Pagination<Item> getAllPaginationItems(ItemFilter filter, Paging paging) throws SQLException {
         Pagination<Item> pagination = new Pagination<>();
@@ -97,10 +113,11 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * return item by id form the store
+     *
      * @param id - item's id
      * @return return item by id form the store
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public Item getById(Integer id) throws SQLException {
@@ -109,11 +126,12 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * ordering book by user
+     *
      * @param book - book which will be ordered
      * @param user - the user who orders item
      * @return <TT>true</TT> if order was successful
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     public boolean orderBook(Book book, User user) throws SQLException {
 
@@ -128,11 +146,12 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * ordering available item by user
+     *
      * @param item - item which will be ordered
      * @param user - the user who orders item
      * @return <TT>true</TT> if order was successful
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public boolean orderItem(Item item, User user) throws SQLException {
@@ -159,11 +178,12 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * confirm order item with providing status
-     * @param item - item which already ordered by someone (item's status must be "ordered")
+     *
+     * @param item   - item which already ordered by someone (item's status must be "ordered")
      * @param status - status which will be set for item if confirmation will be successful
      * @return <TT>true</TT> if confirmation was successful
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public boolean confirmOrder(Item item, Status status) throws SQLException {
@@ -186,10 +206,11 @@ public class ItemServiceImpl implements ItemService {
 
     /**
      * return item to the library
+     *
      * @param item - item which should be returned
      * @return <TT>true</TT> if returning was successful
      * @throws SQLException - if something wrong with connection or
-     *          executing query
+     *                      executing query
      */
     @Override
     public boolean returnItem(Item item) throws SQLException {
@@ -204,7 +225,6 @@ public class ItemServiceImpl implements ItemService {
             System.err.println("error while returning order");
             return false;
         }
-
         return true;
     }
 }
