@@ -29,6 +29,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Class for interaction with items
+ */
 @WebServlet(loadOnStartup = 1)
 public class ItemController extends HttpServlet {
 
@@ -47,7 +50,7 @@ public class ItemController extends HttpServlet {
 
         boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
         if (!hasAdminRole) {
-            resp.sendRedirect("/book/all");
+            return;
         }
         req.setAttribute("hasAdminRole", hasAdminRole);
 

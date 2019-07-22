@@ -213,6 +213,7 @@ public class RoleDaoImpl implements RoleDao {
             LOG.error(e.getMessage());
             connection.rollback();
         } finally {
+            connection.setAutoCommit(true);
             pool.releaseConnection(connection);
         }
         return false;
