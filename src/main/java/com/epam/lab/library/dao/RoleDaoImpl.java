@@ -193,7 +193,6 @@ public class RoleDaoImpl implements RoleDao {
     public boolean delete(int id) throws SQLException {
 
         Connection connection = null;
-        connection.setAutoCommit(false);
 
         try {
             connection = pool.getConnection();
@@ -214,7 +213,6 @@ public class RoleDaoImpl implements RoleDao {
             LOG.error(e.getMessage());
             connection.rollback();
         } finally {
-            connection.setAutoCommit(true);
             pool.releaseConnection(connection);
         }
         return false;
