@@ -16,6 +16,7 @@ import com.epam.lab.library.util.RoleUtil;
 import com.epam.lab.library.util.pagination.Paging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +30,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Class for interaction with items
+ */
 @WebServlet(loadOnStartup = 1)
 public class ItemController extends HttpServlet {
 
@@ -39,11 +43,11 @@ public class ItemController extends HttpServlet {
     private StatusesDao statusesDao = new StatusesDaoImpl();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         HttpSession session = req.getSession();
         @SuppressWarnings("unchecked")
-        Set<Role> roles = (HashSet)session.getAttribute("roles");
+        Set<Role> roles = (HashSet) session.getAttribute("roles");
 
         boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
         if (!hasAdminRole) {
@@ -64,9 +68,7 @@ public class ItemController extends HttpServlet {
                     .collect(Collectors.toList()));
         } catch (SQLException e) {
             LOG.error(e.getMessage());
-
         }
-
         req.getRequestDispatcher("/WEB-INF/views/item/all.jsp").forward(req, resp);
     }
 }

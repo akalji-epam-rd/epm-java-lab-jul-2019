@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Book data access object
+ */
 public class BookDaoImpl implements BookDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();

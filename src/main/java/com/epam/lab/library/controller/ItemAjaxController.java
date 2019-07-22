@@ -1,6 +1,5 @@
 package com.epam.lab.library.controller;
 
-
 import com.epam.lab.library.dao.BookDaoImpl;
 import com.epam.lab.library.dao.StatusesDaoImpl;
 import com.epam.lab.library.dao.UserDaoImpl;
@@ -17,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,6 +31,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Item ajax interaction class
+ */
 @WebServlet(loadOnStartup = 1)
 public class ItemAjaxController extends HttpServlet {
 
@@ -116,7 +119,6 @@ public class ItemAjaxController extends HttpServlet {
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(paginationJson.toString());
         }
-
     }
 
     @Override
@@ -179,7 +181,6 @@ public class ItemAjaxController extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(paginationJson.toString());
-
     }
 
     @Override
@@ -213,7 +214,6 @@ public class ItemAjaxController extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(paginationJson.toString());
-
     }
 
     @Override
@@ -296,7 +296,6 @@ public class ItemAjaxController extends HttpServlet {
             for (Item i : itemList) {
                 itemJsonList.add(i.getAsJson());
             }
-
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(itemJsonList.toString());

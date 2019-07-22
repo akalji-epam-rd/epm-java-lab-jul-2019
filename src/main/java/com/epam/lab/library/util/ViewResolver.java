@@ -5,12 +5,16 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * View resolver class
+ */
 public class ViewResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(ViewResolver.class);
 
     /**
      * resolve url according to REST
+     *
      * @param request
      * @return [0] - type of request like add, edit etc. [1] - path to view
      */
@@ -18,11 +22,10 @@ public class ViewResolver {
         final String ROOT = "/WEB-INF/views" + request.getServletPath();
         String pathInfo = request.getPathInfo().substring(1);
         String type = pathInfo.split("/")[0];
-        return new String[] {type, ROOT + "/" + type + ".jsp"};
+        return new String[]{type, ROOT + "/" + type + ".jsp"};
     }
 
     /**
-     *
      * @param request
      * @return id that must exists at the end of request url
      */

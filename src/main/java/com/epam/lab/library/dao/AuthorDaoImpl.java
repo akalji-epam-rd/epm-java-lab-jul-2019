@@ -1,6 +1,5 @@
 package com.epam.lab.library.dao;
 
-
 import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
@@ -14,12 +13,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Author data access object
+ */
+//TODO put ResultSet in try with resources
 public class AuthorDaoImpl implements AuthorDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
     private static final Logger logger = LoggerFactory.getLogger(AuthorDaoImpl.class);
 
     /**
+     * Returning list of authors
+     *
      * @return list of all authors from database
      */
     @Override
@@ -67,7 +72,6 @@ public class AuthorDaoImpl implements AuthorDao {
             }
 
             return authors;
-
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -77,6 +81,8 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     /**
+     * Get Author by id
+     *
      * @param id - identifier of author in database
      * @return Book with given id from database
      */
@@ -237,7 +243,7 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     /**
-     * Just delete all books from table
+     * Delete all books from table
      */
     @Override
     public void deleteAll() {

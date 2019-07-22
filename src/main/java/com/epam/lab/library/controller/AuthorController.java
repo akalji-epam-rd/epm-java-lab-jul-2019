@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Author interaction class
+ */
 @WebServlet(name = "AuthorController", urlPatterns = "/author/*", loadOnStartup = 1)
 public class AuthorController extends HttpServlet {
 

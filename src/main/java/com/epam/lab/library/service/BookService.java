@@ -13,6 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Book service layer class
+ */
 public class BookService {
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
@@ -46,6 +49,7 @@ public class BookService {
 
     /**
      * Creates record in table books and respective records in table authors_books
+     *
      * @param book
      * @return true if save have been successful and false if not
      */
