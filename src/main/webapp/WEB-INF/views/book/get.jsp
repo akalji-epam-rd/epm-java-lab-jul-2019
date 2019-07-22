@@ -10,9 +10,9 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-    <c:forEach items="${authors}" var="author">
-        <c:out value="${author.name}" />
-        <c:out value="${author.lastName}" />
-    </c:forEach>
+    <div><c:out value="${book.name}"/></div>
+    <div><c:out value="${book.description}"/></div>
+    <div><a href="/order">Order this book</a>></div>
+
 </body>
 </html>

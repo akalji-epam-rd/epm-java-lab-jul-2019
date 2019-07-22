@@ -19,6 +19,7 @@ public class LogoutController extends HttpServlet {
         session.removeAttribute("password");
         session.removeAttribute("email");
         session.removeAttribute("roles");
+        session.removeAttribute("user");
         LOG.info("logout was successful");
         resp.sendRedirect("/");
     }

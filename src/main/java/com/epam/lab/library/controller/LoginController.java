@@ -42,6 +42,7 @@ public class LoginController extends HttpServlet {
                 session.setAttribute("password", password);
                 session.setAttribute("email", email);
                 session.setAttribute("roles", user.getRoles());
+                session.setAttribute("user", user);
                 LOG.info("user is exist and logged in");
 
                 resp.sendRedirect("/book/all");

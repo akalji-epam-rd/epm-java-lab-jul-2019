@@ -5,75 +5,95 @@ import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//TODO put ResultSet in try with resources
 public class AuthorDaoImpl implements AuthorDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(AuthorDaoImpl.class);
 
     /**
-     *
      * @return list of all authors from database
      */
     @Override
-    public List<Author> getAll() {
-        Connection connection = null;
-        try {
-            connection = pool.getConnection();
+    public List<Author> getAll() throws SQLException {
+        Connection connection = pool.getConnection();
 
-            String query = "SELECT * FROM library.authors";
+        String query = "SELECT authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname, " +
+                "books.id as b_id, books.name as b_name, description as b_description " +
+                "FROM library.authors " +
+                "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
+                "LEFT JOIN library.books ON authors_books.book_id = books.id ";
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        Statement statement = connection.createStatement();
+        try (ResultSet resultSet = statement.executeQuery(query)) {
 
             List<Author> authors = new ArrayList<>();
+            ArrayList<Integer> identifies = new ArrayList<>();
+
             while (resultSet.next()) {
-                Author author = new Author();
-                author.setId(resultSet.getInt("id"))
-                        .setName(resultSet.getString("name"))
-                        .setLastName(resultSet.getString("lastname"));
-                authors.add(author);
+
+                Book book = new Book();
+                book.setId(resultSet.getInt("b_id"))
+                        .setName(resultSet.getString("b_name"))
+                        .setDescription(resultSet.getString("b_description"));
+
+                Integer authorId = resultSet.getInt("b_id");
+
+                if (identifies.contains(authorId)) {
+                    for (Author author : authors) {
+                        if (author.getId() == authorId) {
+                            author.getBooks().add(book);
+                        }
+                    }
+                } else {
+                    Author author = new Author();
+                    author.setId(resultSet.getInt("id"))
+                            .setName(resultSet.getString("name"))
+                            .setLastName(resultSet.getString("lastname"));
+                    Set<Book> books = new HashSet<>();
+                    books.add(book);
+                    author.setBooks(books);
+                    authors.add(author);
+                    identifies.add(authorId);
+                }
             }
+
             return authors;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
-     *
      * @param id - identifier of author in database
      * @return Book with given id from database
      */
     @Override
-    public Author getById(int id) {
+    public Author getById(int id) throws SQLException {
 
-        Connection connection = null;
-        try {
-            connection = pool.getConnection();
+        Connection connection = pool.getConnection();
 
-            String query = "SELECT authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname, books.id as b_id, books.name as b_name, description as b_description " +
-                    "FROM library.authors " +
-                    "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
-                    "LEFT JOIN library.books ON authors_books.book_id = books.id " +
-                    "WHERE authors.id=" + id;
+        String query = "SELECT authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname, books.id as b_id, books.name as b_name, description as b_description " +
+                "FROM library.authors " +
+                "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
+                "LEFT JOIN library.books ON authors_books.book_id = books.id " +
+                "WHERE authors.id=?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, id);
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (!resultSet.next()) {
                 return null;
@@ -93,54 +113,47 @@ public class AuthorDaoImpl implements AuthorDao {
 
                 books.add(book);
             } while (resultSet.next());
-            resultSet.close();
             author.setBooks(books);
-
             return author;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
      * Saves given author in database
+     *
      * @param author domain model for saving
      * @return id of saved author
      */
     @Override
-    public Integer save(Author author) {
+    public Integer save(Author author) throws SQLException {
 
-        Connection connection = null;
+        Connection connection = pool.getConnection();
+        connection.setAutoCommit(false);
 
-        try {
-            connection = pool.getConnection();
-            connection.setAutoCommit(false);
+        String query = "INSERT INTO library.authors(name, lastname) " +
+                "VALUES(?, ?) RETURNING id";
 
-            String query = "INSERT INTO library.authors(name, lastname) " +
-                    "VALUES('" + author.getName() + "', '" + author.getLastName() + "') " +
-                    "RETURNING id";
-
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, author.getName());
+        statement.setString(2, author.getLastName());
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 connection.commit();
-                resultSet.close();
                 return id;
             } else {
                 connection.rollback();
-                resultSet.close();
                 return null;
             }
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
@@ -149,38 +162,39 @@ public class AuthorDaoImpl implements AuthorDao {
 
     /**
      * Updates given author
+     *
      * @param author domain model for updating
      * @return id of saved author if exists or null if not exist
      */
     @Override
-    public Integer update(Author author) {
+    public Integer update(Author author) throws SQLException {
 
-        Connection connection = null;
+        Connection connection = pool.getConnection();
+        connection.setAutoCommit(false);
 
-        try {
-            connection = pool.getConnection();
-            connection.setAutoCommit(false);
+        String query = "UPDATE library.authors SET " +
+                "name=?, " +
+                "lastname=? " +
+                "WHERE id=?" +
+                "RETURNING id";
 
-            String query = "UPDATE library.authors SET name='" + author.getName() + "', lastname='" + author.getLastName() + "' " +
-                    "WHERE id=" + author.getId() + " " +
-                    "RETURNING id";
-
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, author.getName());
+        statement.setString(2, author.getLastName());
+        statement.setInt(3, author.getId());
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 connection.commit();
-                resultSet.close();
                 return id;
             } else {
                 connection.rollback();
-                resultSet.close();
                 return null;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
@@ -189,37 +203,33 @@ public class AuthorDaoImpl implements AuthorDao {
 
     /**
      * Deletes given author from database
+     *
      * @param author domain model for deleting
      * @return true if author have been deleted of false if not
      */
     @Override
-    public boolean delete(Author author) {
+    public boolean delete(Author author) throws SQLException {
 
-        Connection connection = null;
+        Connection connection = pool.getConnection();
+        connection.setAutoCommit(false);
 
-        try {
-            connection = pool.getConnection();
-            connection.setAutoCommit(false);
+        String query = "DELETE FROM library.authors " +
+                "WHERE id=? " +
+                "RETURNING id";
 
-            String query = "DELETE FROM library.authors " +
-                    "WHERE id=" + author.getId() + " " +
-                    "RETURNING id";
-
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 connection.commit();
-                resultSet.close();
                 return true;
             } else {
                 connection.rollback();
-                resultSet.close();
                 return false;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
@@ -244,7 +254,7 @@ public class AuthorDaoImpl implements AuthorDao {
             statement.execute(query);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }

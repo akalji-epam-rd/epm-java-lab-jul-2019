@@ -5,7 +5,7 @@ import com.epam.lab.library.dao.interfaces.UserDao;
 import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.service.UserService;
 import com.epam.lab.library.util.RoleUtil;
-import com.epam.lab.library.util.connectionpool.ViewResolver;
+import com.epam.lab.library.util.ViewResolver;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

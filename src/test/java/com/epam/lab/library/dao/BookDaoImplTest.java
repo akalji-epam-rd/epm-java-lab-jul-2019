@@ -4,6 +4,7 @@ import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.domain.Book;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class BookDaoImplTest {
 
 
     @Test
-    public void saveAndGetById() {
+    public void saveAndGetById() throws SQLException {
         bookDao.deleteAll();
 
         Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
@@ -38,7 +39,7 @@ public class BookDaoImplTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws SQLException {
         bookDao.deleteAll();
 
         Book book;
@@ -64,7 +65,7 @@ public class BookDaoImplTest {
     }
 
     @Test
-    public void delete() {
+    public void delete() throws SQLException {
         bookDao.deleteAll();
 
         Book book1 = new Book().setName("Anna Karenina").setDescription("Death under the train");
@@ -78,7 +79,5 @@ public class BookDaoImplTest {
         assertTrue(bookDao.delete(book1));
         assertTrue(bookDao.delete(book2));
         assertTrue(bookDao.delete(book3));
-
-        List<Book> arrayFromDB = bookDao.getAll();
     }
 }

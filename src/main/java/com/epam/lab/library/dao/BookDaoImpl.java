@@ -1,108 +1,100 @@
 package com.epam.lab.library.dao;
 
-import com.epam.lab.library.util.connectionpool.ConnectionPool;
 import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
+import com.epam.lab.library.util.connectionpool.ConnectionPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//TODO put ResultSet in try with resources
 public class BookDaoImpl implements BookDao {
 
     private ConnectionPool pool = ConnectionPool.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(AuthorDaoImpl.class);
 
     /**
-     *
      * @return list of all books from database
      */
     @Override
-    public List<Book> getAll() {
+    public List<Book> getAll() throws SQLException {
 
-        Connection connection = null;
-        try {
-            connection = pool.getConnection();
+        Connection connection = pool.getConnection();
 
-            String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
-                    "FROM library.books " +
-                    "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
-                    "LEFT JOIN library.authors ON authors_books.author_id = authors.id";
+        String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, " +
+                "authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
+                "FROM library.books " +
+                "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
+                "LEFT JOIN library.authors ON authors_books.author_id = authors.id";
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-
-            if (!resultSet.next()) {
-                return null;
-            }
+        Statement statement = connection.createStatement();
+        try (ResultSet resultSet = statement.executeQuery(query)) {
 
             List<Book> books = new ArrayList<>();
-
-            Book book = null;
-            Set<Author> authors = null;
-            Integer prevBookId = null;
+            ArrayList<Integer> identifies = new ArrayList<>();
 
             while (resultSet.next()) {
-                Integer currentBookId = resultSet.getInt("b_id");
-
-                if (!currentBookId.equals(prevBookId)) {
-                    prevBookId = resultSet.getInt("b_id");
-
-                    book = new Book();
-                    authors = new HashSet<>();
-                    book.setAuthors(authors);
-                    books.add(book);
-
-                    book.setId(prevBookId)
-                            .setName(resultSet.getString("b_name"))
-                            .setDescription(resultSet.getString("b_description"));
-                }
 
                 Author author = new Author();
                 author.setId(resultSet.getInt("a_id"))
                         .setName(resultSet.getString("a_name"))
                         .setLastName(resultSet.getString("a_lastname"));
-                authors.add(author);
+
+                Integer bookId = resultSet.getInt("b_id");
+
+                if (identifies.contains(bookId)) {
+                    for (Book book : books) {
+                        if (book.getId() == bookId) {
+                            book.getAuthors().add(author);
+                        }
+                    }
+                } else {
+                    Book book = new Book();
+                    book.setId(resultSet.getInt("b_id"))
+                            .setName(resultSet.getString("b_name"))
+                            .setDescription(resultSet.getString("b_description"));
+                    Set<Author> authors = new HashSet<>();
+                    authors.add(author);
+                    book.setAuthors(authors);
+                    books.add(book);
+                    identifies.add(bookId);
+                }
             }
 
-            resultSet.close();
             return books;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
-     *
      * @param id - identifier of book in database
      * @return Book with given id from database
      */
     @Override
-    public Book getById(int id) {
+    public Book getById(int id) throws SQLException {
 
-        Connection connection = null;
-        try {
-            connection = pool.getConnection();
+        Connection connection = pool.getConnection();
 
-            String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
-                    "FROM library.books " +
-                    "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
-                    "LEFT JOIN library.authors ON authors_books.author_id = authors.id " +
-                    "WHERE books.id=" + id;
+        String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, " +
+                "authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
+                "FROM library.books " +
+                "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
+                "LEFT JOIN library.authors ON authors_books.author_id = authors.id " +
+                "WHERE books.id=?";
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, id);
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (!resultSet.next()) {
                 return null;
@@ -122,54 +114,50 @@ public class BookDaoImpl implements BookDao {
 
                 authors.add(author);
             } while (resultSet.next());
-            resultSet.close();
             book.setAuthors(authors);
 
             return book;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
-
         return null;
     }
 
     /**
      * Saves given book in database
+     *
      * @param book domain model for saving
      * @return id of saved book
      */
     @Override
-    public Integer save(Book book) {
+    public Integer save(Book book) throws SQLException {
 
-        Connection connection = null;
+        Connection connection = pool.getConnection();
+        connection.setAutoCommit(false);
 
-        try {
-            connection = pool.getConnection();
-            connection.setAutoCommit(false);
+        String query = "INSERT INTO library.books(name, description) " +
+                "VALUES(?, ?) " +
+                "RETURNING id";
 
-            String query = "INSERT INTO library.books(name, description) " +
-                    "VALUES('" + book.getName() + "', '" + book.getDescription() + "') " +
-                    "RETURNING id";
-
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, book.getName());
+        statement.setString(2, book.getDescription());
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 connection.commit();
-                resultSet.close();
                 return id;
             } else {
                 connection.rollback();
-                resultSet.close();
                 return null;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
@@ -178,38 +166,41 @@ public class BookDaoImpl implements BookDao {
 
     /**
      * Updates given book
+     *
      * @param book domain model for updating
      * @return id of saved book if exists or null if not exist
      */
     @Override
-    public Integer update(Book book) {
+    public Integer update(Book book) throws SQLException {
 
-        Connection connection = null;
+        Connection connection = pool.getConnection();
+        connection.setAutoCommit(false);
 
-        try {
-            connection = pool.getConnection();
-            connection.setAutoCommit(false);
+        String query = "UPDATE library.books SET " +
+                "name=?, " +
+                "description=? " +
+                "WHERE id=? " +
+                "RETURNING id";
 
-            String query = "UPDATE library.books SET name='" + book.getName() + "', description='" + book.getDescription() + "' " +
-                    "WHERE id=" + book.getId() + " " +
-                    "RETURNING id";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, book.getName());
+        statement.setString(2, book.getDescription());
+        statement.setInt(3, book.getId());
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 connection.commit();
-                resultSet.close();
                 return id;
             } else {
                 connection.rollback();
-                resultSet.close();
                 return null;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            System.err.println("WTF");
         } finally {
             pool.releaseConnection(connection);
         }
@@ -218,24 +209,23 @@ public class BookDaoImpl implements BookDao {
 
     /**
      * Deletes given book from database
+     *
      * @param book domain model for deleting
      * @return true if book have been deleted of false if not
      */
     @Override
-    public boolean delete(Book book) {
+    public boolean delete(Book book) throws SQLException {
 
-        Connection connection = null;
+        Connection connection = pool.getConnection();
+        connection.setAutoCommit(false);
 
-        try {
-            connection = pool.getConnection();
-            connection.setAutoCommit(false);
+        String query = "DELETE FROM library.books " +
+                "WHERE id=? " +
+                "RETURNING id";
 
-            String query = "DELETE FROM library.books " +
-                    "WHERE id=" + book.getId() + " " +
-                    "RETURNING id";
-
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, book.getId());
+        try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 connection.commit();
@@ -248,7 +238,7 @@ public class BookDaoImpl implements BookDao {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
@@ -273,7 +263,7 @@ public class BookDaoImpl implements BookDao {
             statement.execute(query);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(connection);
         }
