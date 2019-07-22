@@ -351,4 +351,56 @@ public class UserDaoImpl implements UserDao {
         }
         return total;
     }
+
+
+    /**
+     * Returns user object with current email
+     *
+     * @param email
+     * @return User with given email
+     * @throws SQLException
+     */
+    @Override
+    public User getByEmail(String email) throws SQLException {
+
+        Connection connection = pool.getConnection();
+
+        String query = "SELECT u.id, u.name, u.lastname, u.email, u.password, ro.id AS role_id, ro.name AS role_name " +
+                "FROM library.users u " +
+                "LEFT JOIN library.users_roles ur ON u.id = ur.user_id " +
+                "LEFT JOIN library.roles ro ON ur.role_id = ro.id " +
+                "WHERE u.email = ?";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        try (ResultSet resultSet = statement.executeQuery()) {
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            User user = new User();
+            user.setId(resultSet.getInt("id"))
+                    .setEmail(resultSet.getString("email"))
+                    .setPassword(resultSet.getString("password"))
+                    .setName(resultSet.getString("name"))
+                    .setLastName(resultSet.getString("lastname"));
+
+            Set<Role> roles = new HashSet<>();
+            do {
+                Role role = new Role();
+                role.setId(resultSet.getInt("role_id"))
+                        .setName(resultSet.getString("role_name"));
+                roles.add(role);
+            } while (resultSet.next());
+            user.setRoles(roles);
+
+            return user;
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return null;
+    }
 }

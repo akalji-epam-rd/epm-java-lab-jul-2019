@@ -13,6 +13,8 @@ public interface UserDao {
 
     User getById(int id);
 
+    User getByEmail(String email) throws SQLException;
+
     List<User> getAll();
 
     List<User> getAll(Paging paging);

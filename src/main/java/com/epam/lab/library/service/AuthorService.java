@@ -1,6 +1,8 @@
 package com.epam.lab.library.service;
 
+import com.epam.lab.library.dao.AuthorDaoImpl;
 import com.epam.lab.library.dao.BookDaoImpl;
+import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
@@ -14,20 +16,20 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Book service layer class
+ * Author service layer class
  */
-public class BookService {
+public class AuthorService {
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
     ConnectionPool pool = ConnectionPool.getInstance();
-    private BookDao bookDao = new BookDaoImpl();
+    private AuthorDao authorDao = new AuthorDaoImpl();
 
     /**
-     * @return all books in table
+     * @return all authors in table
      */
-    public List<Book> getAll() {
+    public List<Author> getAll() {
         try {
-            return bookDao.getAll();
+            return authorDao.getAll();
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             return null;
@@ -36,11 +38,11 @@ public class BookService {
 
     /**
      * @param id
-     * @return book by given id
+     * @return author by given id
      */
-    public Book getById(int id) {
+    public Author getById(int id) {
         try {
-            return bookDao.getById(id);
+            return authorDao.getById(id);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             return null;
@@ -50,32 +52,31 @@ public class BookService {
     /**
      * Creates record in table books and respective records in table authors_books
      *
-     * @param book
+     * @param author
      * @return true if save have been successful and false if not
      */
-    public boolean save(Book book) {
+    public boolean save(Author author) {
 
         Connection connection = null;
         try {
             connection = pool.getConnection();
             connection.setAutoCommit(false);
 
-            Integer bookId = bookDao.save(book);
+            Integer authorId = authorDao.save(author);
             String query = "INSERT INTO library.authors_books(author_id, book_id) " +
                     "VALUES(?, ?)";
 
-            if (bookId == null) {
+            if (authorId == null) {
                 return false;
             }
 
-            for (Author author : book.getAuthors()) {
+            for (Book book : author.getBooks()) {
                 PreparedStatement statement = connection.prepareStatement(query);
-                statement.setInt(1, author.getId());
-                statement.setInt(2, bookId);
+                statement.setInt(1, authorId);
+                statement.setInt(2, book.getId());
                 statement.executeQuery();
             }
 
-            connection.commit();
             return true;
         } catch (SQLException | NullPointerException e) {
             logger.error(e.getMessage(), e);
@@ -90,10 +91,15 @@ public class BookService {
         return false;
     }
 
-    //TODO Think about how to make it correct
-    public boolean update(Book book) {
+    /**
+     * try to update author's data
+     *
+     * @param author
+     * @return true if update was completed and false if not
+     */
+    public boolean update(Author author) {
         try {
-            Integer id = bookDao.update(book);
+            Integer id = authorDao.update(author);
             if (id != null) {
                 return true;
             } else {
@@ -105,8 +111,18 @@ public class BookService {
         }
     }
 
-    //TODO Implement?
-    public boolean delete(Book book) {
+    /**
+     * Try to delete author without books from database
+     *
+     * @param author
+     * @return true if deletion was completed and false if not
+     */
+    public boolean delete(Author author) {
+        try {
+            authorDao.delete(author);
+        } catch (SQLException e) {
+            logger.error("Forbidden deletion", e);
+        }
         return false;
     }
 }
