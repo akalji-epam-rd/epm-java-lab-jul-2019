@@ -47,7 +47,7 @@ public class ItemController extends HttpServlet {
 
         boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
         if (!hasAdminRole) {
-            return;
+            resp.sendRedirect("/book/all");
         }
         req.setAttribute("hasAdminRole", hasAdminRole);
 
@@ -63,7 +63,7 @@ public class ItemController extends HttpServlet {
                     .stream().sorted(Comparator.comparingInt(Item::getId))
                     .collect(Collectors.toList()));
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
 
         }
 

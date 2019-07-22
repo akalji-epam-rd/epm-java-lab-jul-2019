@@ -84,7 +84,7 @@ public class ItemDaoImpl implements ItemDao {
             }
             conn.commit();
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
             conn.rollback();
         } finally {
             conn.setAutoCommit(true);
@@ -125,7 +125,7 @@ public class ItemDaoImpl implements ItemDao {
             }
             conn.commit();
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
             conn.rollback();
         } finally {
             conn.setAutoCommit(true);
@@ -156,7 +156,7 @@ public class ItemDaoImpl implements ItemDao {
             conn.commit();
             return true;
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
             conn.rollback();
         } finally {
             conn.setAutoCommit(true);
@@ -210,7 +210,7 @@ public class ItemDaoImpl implements ItemDao {
             }
             return itemList;
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(conn);
         }
@@ -295,7 +295,7 @@ public class ItemDaoImpl implements ItemDao {
                 return item;
             }
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(conn);
         }
@@ -325,7 +325,7 @@ public class ItemDaoImpl implements ItemDao {
                 total = rs.getInt("count");
             }
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         } finally {
             pool.releaseConnection(conn);
         }

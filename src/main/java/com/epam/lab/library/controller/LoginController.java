@@ -39,6 +39,7 @@ public class LoginController extends HttpServlet {
                     && u.getPassword().equals(password)) {
 
                 User user = userDao.getById(u.getId());
+                session.setAttribute("userId", user.getId());
                 session.setAttribute("password", password);
                 session.setAttribute("email", email);
                 session.setAttribute("roles", user.getRoles());

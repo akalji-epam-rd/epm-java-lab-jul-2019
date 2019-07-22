@@ -198,6 +198,8 @@ public class ItemServiceImpl implements ItemService {
             Status status = statusesDao.getAll()
                     .stream().filter(s -> s.getName().equals("available"))
                     .findFirst().get();
+            item.setStatus(status);
+            item.setUser(null);
             itemDao.update(item);
         } catch (SQLException e) {
             e.printStackTrace();

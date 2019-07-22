@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,62 +46,98 @@ public class ItemAjaxController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String[] pathInfo = req.getPathInfo().split("/");
-        if ("get".equals(pathInfo[1])) {
-            Integer id;
-            Item item = new Item();
 
-            try {
-                id = Integer.parseInt(pathInfo[2]);
-                item = itemService.getById(id);
-            } catch (NumberFormatException | SQLException e) {
-                LOG.error(e.getMessage());
-            }
+        switch (pathInfo[1]) {
+            case "get":
+                getItem(req, resp);
+                break;
+            case "getAll":
+                getAll(req, resp);
+                break;
+            default:
+                resp.sendRedirect("/");
+                break;
+        }
+    }
 
-            JSONObject itemJson = item.getAsJson();
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(itemJson.toString());
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        } else if ("getAll".equals(pathInfo[1])) {
+        String[] pathInfo = req.getPathInfo().split("/");
 
-            if (pathInfo.length > 2 && pathInfo[2] != null) {
+        switch (pathInfo[1]) {
+            case "add":
+                addItem(req, resp);
+                break;
+            default:
+                resp.sendRedirect("/");
+                break;
+        }
+    }
 
-                Integer pageNumber = Integer.parseInt(pathInfo[2]);
-                paging.setPageNumber(pageNumber);
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-                Pagination<Item> pagination = new Pagination<>();
-                try {
-                    pagination = itemService.getAllPaginationItems(null, paging);
-                    pagination.setList(pagination.getList().stream().sorted(Comparator.comparingInt(Item::getId))
-                            .collect(Collectors.toList()));
-                } catch (SQLException e) {
-                    LOG.error(e.getMessage());
-                }
+        String[] pathInfo = req.getPathInfo().split("/");
 
-                List<JSONObject> itemJsonList = new ArrayList<>();
-                for (Item i : pagination.getList()) {
-                    itemJsonList.add(i.getAsJson());
-                }
+        switch (pathInfo[1]) {
+            case "delete":
+                deleteItem(req, resp);
+                break;
+            default:
+                resp.sendRedirect("/");
+        }
+    }
 
-                JSONObject paginationJson = pagination.getAsJson();
-                paginationJson.put("items", itemJsonList);
-                paginationJson.put("currentPage", paging.getPageNumber());
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-                resp.setContentType("application/json");
-                resp.setCharacterEncoding("UTF-8");
-                resp.getWriter().write(paginationJson.toString());
+        String[] pathInfo = req.getPathInfo().split("/");
 
-                return;
-            }
+        switch (pathInfo[1]) {
+            case "update":
+                updateItem(req, resp);
+                break;
+            case "confirmOrder":
+                confirmOrder(req, resp);
+                break;
+            default:
+                resp.sendRedirect("/");
+        }
+    }
+
+    private void getItem(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] pathInfo = req.getPathInfo().split("/");
+        Integer id;
+        Item item = new Item();
+        try {
+            id = Integer.parseInt(pathInfo[2]);
+            item = itemService.getById(id);
+        } catch (NumberFormatException | SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
+
+        JSONObject itemJson = item.getAsJson();
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(itemJson.toString());
+    }
+
+    private void getAll(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] pathInfo = req.getPathInfo().split("/");
+
+        if (pathInfo.length > 2 && pathInfo[2] != null) {
+
+            Integer pageNumber = Integer.parseInt(pathInfo[2]);
+            paging.setPageNumber(pageNumber);
 
             Pagination<Item> pagination = new Pagination<>();
             try {
                 pagination = itemService.getAllPaginationItems(null, paging);
                 pagination.setList(pagination.getList().stream().sorted(Comparator.comparingInt(Item::getId))
                         .collect(Collectors.toList()));
-
             } catch (SQLException e) {
-                LOG.error(e.getMessage());
+                LOG.error(e.getMessage(), e);
             }
 
             List<JSONObject> itemJsonList = new ArrayList<>();
@@ -115,27 +152,50 @@ public class ItemAjaxController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(paginationJson.toString());
+
+            return;
         }
+
+        Pagination<Item> pagination = new Pagination<>();
+        try {
+            pagination = itemService.getAllPaginationItems(null, paging);
+            pagination.setList(pagination.getList().stream().sorted(Comparator.comparingInt(Item::getId))
+                    .collect(Collectors.toList()));
+
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
+
+        List<JSONObject> itemJsonList = new ArrayList<>();
+        for (Item i : pagination.getList()) {
+            itemJsonList.add(i.getAsJson());
+        }
+
+        JSONObject paginationJson = pagination.getAsJson();
+        paginationJson.put("items", itemJsonList);
+        paginationJson.put("currentPage", paging.getPageNumber());
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(paginationJson.toString());
 
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    private void addItem(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         StringBuilder json = new StringBuilder();
         String line = null;
         try (BufferedReader reader = req.getReader()) {
             while ((line = reader.readLine()) != null)
                 json.append(line);
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
         JSONObject requestParameters = null;
         try {
             requestParameters = new JSONObject(json.toString());
         } catch (JSONException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
         Integer itemId = null;
@@ -164,7 +224,7 @@ public class ItemAjaxController extends HttpServlet {
             pagination.setList(pagination.getList().stream().sorted(Comparator.comparingInt(Item::getId))
                     .collect(Collectors.toList()));
         } catch (SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
         List<JSONObject> itemJsonList = new ArrayList<>();
@@ -179,12 +239,9 @@ public class ItemAjaxController extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(paginationJson.toString());
-
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    private void deleteItem(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String[] pathInfo = req.getPathInfo().split("/");
         Item item = null;
         Pagination<Item> pagination = new Pagination<>();
@@ -197,7 +254,7 @@ public class ItemAjaxController extends HttpServlet {
             pagination.setList(pagination.getList().stream().sorted(Comparator.comparingInt(Item::getId))
                     .collect(Collectors.toList()));
         } catch (NumberFormatException | SQLException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
 
@@ -213,12 +270,85 @@ public class ItemAjaxController extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(paginationJson.toString());
-
     }
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void updateItem(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
+        JSONObject requestParameters = getRequestParameters(req);
+
+        Integer itemId = null;
+        Integer bookId = null;
+        Integer userId = null;
+        Integer statusId = null;
+        if (requestParameters != null) {
+            itemId = requestParameters.getInt("itemId");
+            bookId = requestParameters.getInt("bookId");
+            userId = requestParameters.getInt("userId") > -1 ? requestParameters.getInt("userId") : null;
+            statusId = requestParameters.getInt("status");
+        }
+
+        String[] pathInfo = req.getPathInfo().split("/");
+        Integer id = null;
+        Item item = null;
+        List<Item> itemList = new ArrayList<>();
+        try {
+            id = Integer.parseInt(pathInfo[pathInfo.length - 1]);
+            item = itemService.getById(id);
+            item.setBook(bookDao.getById(bookId));
+            item.setUser(userId != null ? userDao.getById(userId) : null);
+            item.setStatus(statusesDao.getById(statusId));
+            item.setDate(new Date(new java.util.Date().getTime()));
+            itemService.update(item);
+            itemList = itemService.getAll(null, paging)
+                    .stream().sorted(Comparator.comparingInt(Item::getId))
+                    .collect(Collectors.toList());
+        } catch (NumberFormatException | SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
+
+        List<JSONObject> itemJsonList = new ArrayList<>();
+
+        for (Item i : itemList) {
+            itemJsonList.add(i.getAsJson());
+        }
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(itemJsonList.toString());
+    }
+
+    private void confirmOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        JSONObject requestParameters = getRequestParameters(req);
+
+        Integer id = requestParameters != null ? requestParameters.getInt("itemId") : 0;
+        if (id == 0) {
+            return;
+        }
+
+        List<Item> itemList = new ArrayList<>();
+        try {
+            Item item = itemService.getById(id);
+            itemService.confirmOrder(item, new Status(3));
+            itemList = itemService.getAll(null, paging)
+                    .stream().sorted(Comparator.comparingInt(Item::getId))
+                    .collect(Collectors.toList());
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
+
+        List<JSONObject> itemJsonList = new ArrayList<>();
+
+        for (Item i : itemList) {
+            itemJsonList.add(i.getAsJson());
+        }
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(itemJsonList.toString());
+    }
+
+    private JSONObject getRequestParameters(HttpServletRequest req) {
         StringBuilder json = new StringBuilder();
         String line = null;
         JSONObject requestParameters = null;
@@ -229,77 +359,9 @@ public class ItemAjaxController extends HttpServlet {
             }
             requestParameters = new JSONObject(json.toString());
         } catch (JSONException | IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
-        if (req.getPathInfo().contains("update")) {
-            Integer itemId = null;
-            Integer bookId = null;
-            Integer userId = null;
-            Integer statusId = null;
-            if (requestParameters != null) {
-                itemId = requestParameters.getInt("itemId");
-                bookId = requestParameters.getInt("bookId");
-                userId = requestParameters.getInt("userId") > -1 ? requestParameters.getInt("userId") : null;
-                statusId = requestParameters.getInt("status");
-            }
-
-            String[] pathInfo = req.getPathInfo().split("/");
-            Integer id = null;
-            Item item = null;
-            List<Item> itemList = new ArrayList<>();
-            try {
-                id = Integer.parseInt(pathInfo[pathInfo.length - 1]);
-                item = itemService.getById(id);
-                item.setBook(bookDao.getById(bookId));
-                item.setUser(userId != null ? userDao.getById(userId) : null);
-                item.setStatus(statusesDao.getById(statusId));
-                item.setDate(new Date(new java.util.Date().getTime()));
-                itemService.update(item);
-                itemList = itemService.getAll(null, paging)
-                        .stream().sorted(Comparator.comparingInt(Item::getId))
-                        .collect(Collectors.toList());
-            } catch (NumberFormatException | SQLException e) {
-                LOG.error(e.getMessage());
-            }
-
-            List<JSONObject> itemJsonList = new ArrayList<>();
-
-            for (Item i : itemList) {
-                itemJsonList.add(i.getAsJson());
-            }
-
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(itemJsonList.toString());
-
-        } else if (req.getPathInfo().contains("confirmOrder")) {
-
-            Integer id = requestParameters != null ? requestParameters.getInt("itemId") : 0;
-            if (id == 0) {
-                return;
-            }
-
-            List<Item> itemList = new ArrayList<>();
-            try {
-                Item item = itemService.getById(id);
-                itemService.confirmOrder(item, new Status(3));
-                itemList = itemService.getAll(null, paging)
-                        .stream().sorted(Comparator.comparingInt(Item::getId))
-                        .collect(Collectors.toList());
-            } catch (SQLException e) {
-                LOG.error(e.getMessage());
-            }
-
-            List<JSONObject> itemJsonList = new ArrayList<>();
-
-            for (Item i : itemList) {
-                itemJsonList.add(i.getAsJson());
-            }
-
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(itemJsonList.toString());
-        }
+        return requestParameters;
     }
 }
