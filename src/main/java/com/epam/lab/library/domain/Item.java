@@ -100,6 +100,10 @@ public class Item {
                 '}';
     }
 
+    /**
+     * convert item to json object
+     * @return json object
+     */
     public JSONObject getAsJson() {
         JSONObject item = new JSONObject();
         item.put("id", this.id);

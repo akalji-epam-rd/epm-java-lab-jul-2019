@@ -25,6 +25,10 @@ public class Pagination<T> {
         this.total = total;
     }
 
+    /**
+     * convert item to json object
+     * @return json object
+     */
     public JSONObject getAsJson() {
 
         JSONObject pagination = new JSONObject();

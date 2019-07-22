@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page session="true" %>
 <html>
 <head>
     <title>Header</title>
@@ -21,12 +22,20 @@
 
         <ul class="nav navbar-nav">
             <li><a href="<c:url value='/book/all'/>">Books</a></li>
-            <li><a href="<c:url value='/item/all'/>">Items</a></li>
-            <li><a href="<c:url value='/user/all'/>">Users</a></li>
+            <c:if test="${hasAdminRole == true}">
+                <li><a href="<c:url value='/item/all'/>">Items</a></li>
+                <li><a href="<c:url value='/user/all'/>">Users</a></li>
+            </c:if>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="<c:url value='/logout'/>"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+
+            <c:if test="${empty email || empty password}">
+                <li><a href="<c:url value='/login'/>"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+            </c:if>
+            <c:if test="${not empty email && not empty password}">
+                <li><a href="<c:url value='/logout'/>"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+            </c:if>
         </ul>
 
     </div>

@@ -4,7 +4,7 @@
     <description>Useless stuff</description>
 
     <welcome-file-list>
-        <welcome-file>/WEB-INF/views/login.jsp</welcome-file>
+        <welcome-file>/WEB-INF/views/book/all.jsp</welcome-file>
     </welcome-file-list>
 
     <servlet>
@@ -48,6 +48,14 @@
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.epam.lab.library.controller.LoginController</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
 
 </web-app>
