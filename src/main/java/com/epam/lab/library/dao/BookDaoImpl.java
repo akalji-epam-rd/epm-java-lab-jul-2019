@@ -177,7 +177,7 @@ public class BookDaoImpl implements BookDao {
         connection.setAutoCommit(false);
 
         String query = "UPDATE library.books SET " +
-                "name=? " +
+                "name=?, " +
                 "description=? " +
                 "WHERE id=? " +
                 "RETURNING id";
@@ -200,6 +200,7 @@ public class BookDaoImpl implements BookDao {
 
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
+            System.err.println("WTF");
         } finally {
             pool.releaseConnection(connection);
         }

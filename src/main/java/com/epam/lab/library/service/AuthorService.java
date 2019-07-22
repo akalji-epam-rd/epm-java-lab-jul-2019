@@ -87,7 +87,11 @@ public class AuthorService {
         return false;
     }
 
-    //TODO Think about how to make it correct
+    /**
+     * try to update author's data
+     * @param author
+     * @return true if update was completed and false if not
+     */
     public boolean update(Author author) {
         try {
             Integer id = authorDao.update(author);
@@ -102,8 +106,17 @@ public class AuthorService {
         }
     }
 
-    //TODO Implement
-    public boolean delete(Book book) {
+    /**
+     * Try to delete author without books from database
+     * @param author
+     * @return true if deletion was completed and false if not
+     */
+    public boolean delete(Author author) {
+        try {
+            authorDao.delete(author);
+        } catch (SQLException e) {
+            logger.error("Forbidden deletion", e);
+        }
         return false;
     }
 }

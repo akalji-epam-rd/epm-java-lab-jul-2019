@@ -79,7 +79,5 @@ public class BookDaoImplTest {
         assertTrue(bookDao.delete(book1));
         assertTrue(bookDao.delete(book2));
         assertTrue(bookDao.delete(book3));
-
-        List<Book> arrayFromDB = bookDao.getAll();
     }
 }

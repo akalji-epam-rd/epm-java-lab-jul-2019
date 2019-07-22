@@ -181,6 +181,7 @@ public class AuthorDaoImpl implements AuthorDao {
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, author.getName());
         statement.setString(2, author.getLastName());
+        statement.setInt(3, author.getId());
         try (ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
