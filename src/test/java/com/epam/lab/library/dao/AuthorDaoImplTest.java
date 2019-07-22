@@ -4,6 +4,7 @@ import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.domain.Author;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class AuthorDaoImplTest {
     private AuthorDao authorDao = new AuthorDaoImpl();
 
     @Test
-    public void saveAndGetById() {
+    public void saveAndGetById() throws SQLException {
         authorDao.deleteAll();
 
         Author author1 = new Author().setName("Lev").setLastName("Tolstoy");
@@ -37,7 +38,7 @@ public class AuthorDaoImplTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws SQLException {
         authorDao.deleteAll();
 
         Author author;
@@ -63,7 +64,7 @@ public class AuthorDaoImplTest {
     }
 
     @Test
-    public void delete() {
+    public void delete() throws SQLException {
         authorDao.deleteAll();
 
         Author author1 = new Author().setName("Lev").setLastName("Tolstoy");
