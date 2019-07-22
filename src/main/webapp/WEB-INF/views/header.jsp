@@ -8,6 +8,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page session="true" %>
+
+<style>
+    .glyphicon {  margin-bottom: 10px;margin-right: 10px;}
+
+    small {
+        display: block;
+        line-height: 1.428571429;
+        color: #999;
+    }
+</style>
+
 <html>
 <head>
     <title>Header</title>
@@ -34,7 +45,8 @@
                 <li><a href="<c:url value='/login'/>"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
             </c:if>
             <c:if test="${not empty email && not empty password}">
-                <li><a href="<c:url value='/logout'/>"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+                <li><a href="<c:url value='/user/profile'/>"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+                <li><a href="<c:url value='/logout'/>"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
             </c:if>
         </ul>
 
