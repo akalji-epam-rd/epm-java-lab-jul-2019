@@ -87,24 +87,18 @@ public class UserDaoImpl implements UserDao {
         return null;
     }
 
-    /**
-     * Return list of users with default pagination
-     *
-     * @return list of items with filter and pagination
-     */
-    public List<User> getAll() {
-        Paging paging = new Paging().setPageNumber(1);
-        return getAll(paging);
+    @Override
+    public User getByEmail(String email) throws SQLException {
+        return null;
     }
 
     /**
      * Method returns collection of users
      *
-     * @param paging - pagination settings
      * @return users collection
      */
     @Override
-    public List<User> getAll(Paging paging) {
+    public List<User> getAll() {
         Connection connection = null;
         List<User> list = new ArrayList<>();
         List<Integer> idList = new ArrayList<>();
@@ -112,8 +106,7 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = pool.getConnection();
             connection = pool.getConnection();
-            String paginationSql = selectAllSql + appendPagination(paging);
-            PreparedStatement statement = connection.prepareStatement(paginationSql);
+            PreparedStatement statement = connection.prepareStatement(selectAllSql);
 
             ResultSet resultSet = statement.executeQuery();
 

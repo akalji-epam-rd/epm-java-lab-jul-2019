@@ -75,7 +75,7 @@
 
     <servlet-mapping>
         <servlet-name>UsersServlet</servlet-name>
-        <url-pattern>/user/all</url-pattern>
+        <url-pattern>/user/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

@@ -1,10 +1,12 @@
 package com.epam.lab.library.controller;
 
 import com.epam.lab.library.domain.Book;
+import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.domain.User;
 import com.epam.lab.library.service.BookService;
 import com.epam.lab.library.service.ItemServiceImpl;
 import com.epam.lab.library.service.interfaces.ItemService;
+import com.epam.lab.library.util.RoleUtil;
 import com.epam.lab.library.util.ViewResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +16,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Book controller class
@@ -30,6 +35,13 @@ public class BookController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        @SuppressWarnings("unchecked")
+        Set<Role> roles = (HashSet) session.getAttribute("roles");
+        boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
+        request.setAttribute("hasAdminRole", hasAdminRole);
+
         String[] info = resolver.getViewPath(request);
         String type = info[0];
         String view = info[1];

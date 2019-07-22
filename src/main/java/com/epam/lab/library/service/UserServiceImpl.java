@@ -77,30 +77,13 @@ public class UserServiceImpl implements UserService {
     /**
      * return list of users with pagination
      *
-     * @param paging - pagination settings
      * @return list of users with pagination
      * @throws SQLException - if something wrong with connection or
      *                      executing query
      */
     @Override
-    public List<User> getAll(Paging paging) throws SQLException {
-        return userDao.getAll(paging);
-    }
-
-    /**
-     * return list of users with additional information about pagination
-     *
-     * @param paging - pagination settings
-     * @return list of users with pagination
-     * @throws SQLException - if something wrong with connection or
-     *                      executing query
-     */
-    @Override
-    public Pagination<User> getAllPaginationUsers(Paging paging) throws SQLException {
-        Pagination<User> pagination = new Pagination<>();
-        pagination.setList((userDao.getAll(paging)));
-        pagination.setTotal(userDao.getTotal());
-        return pagination;
+    public List<User> getAll() throws SQLException {
+        return userDao.getAll();
     }
 
     /**
