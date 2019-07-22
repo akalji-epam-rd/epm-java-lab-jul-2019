@@ -72,7 +72,11 @@ public class BookService {
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setInt(1, author.getId());
                 statement.setInt(2, bookId);
-                statement.executeQuery();
+                try {
+                    statement.executeQuery();
+                } catch (SQLException e) {
+                    logger.info("link already exist");
+                }
             }
 
             connection.commit();
@@ -90,23 +94,65 @@ public class BookService {
         return false;
     }
 
-    //TODO Think about how to make it correct
+    /**
+     * updates respective record in table
+     * @param book
+     * @return true if update have been successful and false if not
+     */
     public boolean update(Book book) {
+        Connection connection = null;
         try {
-            Integer id = bookDao.update(book);
-            if (id != null) {
-                return true;
-            } else {
+            connection = pool.getConnection();
+            Book oldBook = bookDao.getById(book.getId());
+            Integer bookId = bookDao.update(book);
+            if (bookId == null) {
                 return false;
             }
+
+            String deleteQuery = "DELETE FROM library.authors_books WHERE author_id=? AND book_id=?";
+            String addQuery = "INSERT INTO library.authors_books(author_id, book_id) " +
+                    "VALUES(?, ?)";
+
+
+            for (Author author : oldBook.getAuthors()) {
+                PreparedStatement statement = connection.prepareStatement(deleteQuery);
+                statement.setInt(1, author.getId());
+                statement.setInt(2, oldBook.getId());
+                statement.executeQuery();
+            }
+
+            if (book.getAuthors() != null) {
+                for (Author author : book.getAuthors()) {
+                    if (!oldBook.getAuthors().contains(author)) {
+                        PreparedStatement statement = connection.prepareStatement(addQuery);
+                        statement.setInt(1, author.getId());
+                        statement.setInt(2, bookId);
+                        statement.executeQuery();
+                    }
+                }
+            }
+            return true;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             return false;
+        } finally {
+            if (connection != null) {
+                pool.releaseConnection(connection);
+            }
         }
     }
 
-    //TODO Implement?
+    /**
+     * Try to delete book without books from database
+     * @param book
+     * @return true if deletion was completed and false if not
+     */
     public boolean delete(Book book) {
+        try {
+            bookDao.delete(book);
+        } catch (SQLException e) {
+            logger.error("Forbidden deletion", e);
+        }
         return false;
     }
 }

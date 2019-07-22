@@ -60,9 +60,9 @@ public class AuthorDaoImpl implements AuthorDao {
                     }
                 } else {
                     Author author = new Author();
-                    author.setId(resultSet.getInt("id"))
-                            .setName(resultSet.getString("name"))
-                            .setLastName(resultSet.getString("lastname"));
+                    author.setId(resultSet.getInt("a_id"))
+                            .setName(resultSet.getString("a_name"))
+                            .setLastName(resultSet.getString("a_lastname"));
                     Set<Book> books = new HashSet<>();
                     books.add(book);
                     author.setBooks(books);
