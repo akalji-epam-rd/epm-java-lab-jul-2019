@@ -29,9 +29,6 @@ public class AuthFilter implements Filter {
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
         final HttpServletResponse res = (HttpServletResponse) servletResponse;
 
-        @SuppressWarnings("unchecked")
-        final AtomicReference<UserDao> userDao = (AtomicReference<UserDao>) req.getServletContext().getAttribute("userDao");
-
         final HttpSession session = req.getSession();
 
         boolean isStaticResource = req.getRequestURI().startsWith("/static/");

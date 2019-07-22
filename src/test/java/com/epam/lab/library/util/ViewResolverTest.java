@@ -1,13 +1,12 @@
-package com.epam.lab.library.util.connectionpool;
+package com.epam.lab.library.util;
 
-
-import com.epam.lab.library.util.ViewResolver;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ViewResolverTest {
 
