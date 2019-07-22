@@ -4,6 +4,7 @@ import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.domain.Author;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class AuthorDaoImplTest {
     private AuthorDao authorDao = new AuthorDaoImpl();
 
     @Test
-    public void saveAndGetById() {
+    public void saveAndGetById() throws SQLException {
         authorDao.deleteAll();
 
         Author author1 = new Author().setName("Lev").setLastName("Tolstoy");
@@ -37,7 +38,7 @@ public class AuthorDaoImplTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws SQLException {
         authorDao.deleteAll();
 
         Author author;
@@ -60,26 +61,5 @@ public class AuthorDaoImplTest {
         author.setId(id).setName("Pretty").setLastName("Bonfire");
         authorDao.update(author);
         assertEquals(author, authorDao.getById(id));
-    }
-
-    @Test
-    public void delete() {
-        authorDao.deleteAll();
-
-        Author author1 = new Author().setName("Lev").setLastName("Tolstoy");
-        Author author2 = new Author().setName("Alex").setLastName("Pushkin");
-        Author author3 = new Author().setName("Nikolai").setLastName("Gogol");
-
-        author1.setId(authorDao.save(author1));
-        author2.setId(authorDao.save(author2));
-        author3.setId(authorDao.save(author3));
-
-        assertTrue(authorDao.delete(author1));
-        assertTrue(authorDao.delete(author2));
-        assertTrue(authorDao.delete(author3));
-
-        List<Author> arrayFromDB = authorDao.getAll();
-        //Is table empty?
-        assertEquals(new ArrayList<>(), arrayFromDB);
     }
 }
