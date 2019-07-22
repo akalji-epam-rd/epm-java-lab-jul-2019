@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'war'
+}
+
+//war.baseName = 'epamLab'
+
+apply plugin: 'com.bmuschko.tomcat'
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
+task execute(type:JavaExec) {
+    main = 'com.epam.lab.library.Application'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation group: 'junit', name: 'junit', version: '4.12'
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
+
+    def tomcatVersion = '9.0.22'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+}
+
+tomcat {
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}

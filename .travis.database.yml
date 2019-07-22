@@ -1,0 +1,6 @@
+postgres:
+  adapter: postgresql
+  database: library
+  encoding: utf8
+  user: postgres
+  password: admin
