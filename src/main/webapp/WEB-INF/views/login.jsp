@@ -19,14 +19,12 @@
     <label for="inputPassword" class="sr-only">Password</label>
     <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
 
+
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-</form>
-<form>
-    <div style="text-align: center;"> <a href="">
-        <a href="/user/registernew"><button type="button">Register now</button></a>
-    </div>
+    <a href="/user/registernew" >
+        <button type="button" class="btn btn-lg btn-primary btn-block">Sign up</button>
+    </a>
 </form>
 </body>
-
 
 </html>

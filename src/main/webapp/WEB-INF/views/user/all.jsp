@@ -52,14 +52,18 @@
                         </c:forEach>
                     </td>
                     <td>
+                        <a href="/user/edit/${user.id}">
                         <button class="btn btn-primary" type="submit">
                             Edit User
                         </button>
+                        </a>
                     </td>
                     <td>
-                        <button class="btn btn-danger trn" type="submit">
+                        <form action='/user/delete' method="POST">
+                        <button name="userId" value="${user.id}" class="btn btn-danger trn" type="submit">
                             Delete User
                         </button>
+                        </form>
                     </td>
                 </tr>
             </c:forEach>
