@@ -3,7 +3,7 @@
 <html>
 <head>
 
-    <title>Author</title>
+    <title>Book</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="../../../static/css/pretty.css">
     <link rel="stylesheet" type="text/css" href="../../../static/css/bootstrap.min.css">
@@ -15,14 +15,39 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-<div><c:out value="${author.name}"/></div>
-<div><c:out value="${author.lastName}"/></div>
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="well well-sm">
+            <div class="row">
+                <div class="col-sm-6 col-md-4">
+                    <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive"/>
+                </div>
+                <div class="col-sm-6 col-md-8">
+                    <h4>${author.name}</h4>
+                    <p>${author.lastName}<br/>
+                </div>
+                <c:if test="${hasAdminRole}">
+                <div class="col-sm-6 col-md-8">
+
+                        <a href="/author/edit/${author.id}">
+                            <button class="btn btn-primary trn">Edit author
+                            </button>
+                        </a>
+                </div>
+                <div class="col-sm-6 col-md-8">
+                    <form method="POST">
+                        <button class="btn btn-danger trn" name="authorId" value="${author.id}">
+                            Delete book
+                        </button>
+                    </form>
+                </div>
+                </c:if>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-<a href="/book/edit/${book.id}">Edit book</a>
 
-<form method="POST" action="/author//delete/">
-    <button type="submit" name="bookId" value="${author.id}">Edit</button>
-</form>
 </body>
 </html>
