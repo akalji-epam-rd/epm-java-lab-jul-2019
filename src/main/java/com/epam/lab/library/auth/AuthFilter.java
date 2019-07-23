@@ -44,6 +44,7 @@ public class AuthFilter implements Filter {
         boolean isBookFind = req.getRequestURI().startsWith("/book/find");
         boolean isAuthorAll = req.getRequestURI().startsWith("/author/all");
         boolean isAuthorFind = req.getRequestURI().startsWith("/author/find");
+        boolean isRegisterRequested = req.getRequestURI().startsWith("/registernew");
 
         if (isStaticResource) {
             filterChain.doFilter(req, res);
@@ -55,6 +56,8 @@ public class AuthFilter implements Filter {
             filterChain.doFilter(req, res);
         } else if (isLoginRequested) {
             req.getRequestDispatcher("/login").forward(req, res);
+        } else if (isRegisterRequested) {
+            req.getRequestDispatcher("/user/registernew").forward(req, res);
         } else if (nonNull(session) &&
                 nonNull(session.getAttribute("email")) &&
                 nonNull(session.getAttribute("password"))) {

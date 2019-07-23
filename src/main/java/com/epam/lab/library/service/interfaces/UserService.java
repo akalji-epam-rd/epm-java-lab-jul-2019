@@ -18,9 +18,7 @@ public interface UserService {
 
     boolean delete(User user) throws SQLException;
 
-    List<User> getAll(Paging paging) throws SQLException;
-
-    Pagination<User> getAllPaginationUsers(Paging paging) throws SQLException;
+    List<User> getAll() throws SQLException;
 
     User getById(Integer id) throws SQLException;
 }
