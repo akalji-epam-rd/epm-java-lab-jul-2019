@@ -7,7 +7,6 @@
 
     <title>Books</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" type="text/css" href="../../../static/css/pretty.css">
     <link rel="stylesheet" type="text/css" href="../../../static/css/bootstrap.min.css">
 
 </head>
@@ -18,20 +17,36 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-<div class="btnsLine">
-    <a class="frmBtn" href="/add">Add new book</a>
-    <a class="frmBtn" href="/author/add">Add new author</a>
-</div>
-
 <div>
-    <form class="btnsLine" th:action="@{/findProduct}" method="post">
-        <input type="text" name="bookName" placeholder="Book's name">
-        <input type="text" name="authorName" placeholder="Author's name">
-        <input class="frmBtn orange" type="submit" value="Filter"/>
+    <form class="form-horizontal" action='${pageContext.request.contextPath}/book/find' method="POST">
+        <fieldset>
+            <div id="legend">
+                <legend class="">Find book</legend>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="bookName">Name</label>
+                <div class="controls">
+                    <input type="text" id="bookName" name="bookName" placeholder="" class="input-xlarge">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="authorLastName">Author</label>
+                <div class="controls">
+                    <input type="text" id="authorLastName" name="authorLastName" placeholder="" class="input-xlarge">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-success">Filter</button>
+                </div>
+            </div>
+        </fieldset>
     </form>
 </div>
 
-<div class="table">
+<div class="container">
     <table>
 
         <thead>

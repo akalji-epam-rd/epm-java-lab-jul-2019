@@ -37,15 +37,22 @@ public class AuthFilter implements Filter {
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
         final HttpServletResponse res = (HttpServletResponse) servletResponse;
 
-        @SuppressWarnings("unchecked") final AtomicReference<UserDao> userDao = (AtomicReference<UserDao>) req.getServletContext().getAttribute("userDao");
-
         final HttpSession session = req.getSession();
 
         boolean isStaticResource = req.getRequestURI().startsWith("/static/");
         boolean isLoginRequested = req.getRequestURI().startsWith("/login");
+        boolean isBookFind = req.getRequestURI().startsWith("/book/find");
+        boolean isAuthorAll = req.getRequestURI().startsWith("/author/all");
+        boolean isAuthorFind = req.getRequestURI().startsWith("/author/find");
         boolean isRegisterRequested = req.getRequestURI().startsWith("/registernew");
 
         if (isStaticResource) {
+            filterChain.doFilter(req, res);
+        } else if (isBookFind) {
+            filterChain.doFilter(req, res);
+        } else if (isAuthorAll) {
+            filterChain.doFilter(req, res);
+        } else if (isAuthorFind) {
             filterChain.doFilter(req, res);
         } else if (isLoginRequested) {
             req.getRequestDispatcher("/login").forward(req, res);

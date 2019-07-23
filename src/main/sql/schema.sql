@@ -1,4 +1,4 @@
-DROP SCHEMA library CASCADE ;
+DROP SCHEMA library CASCADE;
 
 CREATE SCHEMA library;
 
@@ -80,7 +80,7 @@ CREATE TABLE library.authors_books (
     	NOT DEFERRABLE,
     CONSTRAINT books_fkey FOREIGN KEY(book_id)
     	REFERENCES library.books(id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
     	ON UPDATE RESTRICT
     	NOT DEFERRABLE
 )
