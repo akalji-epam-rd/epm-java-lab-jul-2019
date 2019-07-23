@@ -17,13 +17,10 @@ public interface UserDao {
 
     List<User> getAll();
 
-    List<User> getAll(Paging paging);
-
     Integer save(User user) throws SQLException;
 
     Integer update(User user) throws SQLException;
 
     boolean delete(int id) throws SQLException;
 
-    Integer getTotal() throws SQLException;
 }

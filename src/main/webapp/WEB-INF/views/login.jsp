@@ -21,6 +21,11 @@
 
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 </form>
+<form>
+    <div style="text-align: center;"> <a href="">
+        <a href="/user/registernew"><button type="button">Register now</button></a>
+    </div>
+</form>
 </body>
 
 

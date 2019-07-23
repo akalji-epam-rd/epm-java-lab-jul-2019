@@ -87,24 +87,18 @@ public class UserDaoImpl implements UserDao {
         return null;
     }
 
-    /**
-     * Return list of users with default pagination
-     *
-     * @return list of items with filter and pagination
-     */
-    public List<User> getAll() {
-        Paging paging = new Paging().setPageNumber(1);
-        return getAll(paging);
+    @Override
+    public User getByEmail(String email) throws SQLException {
+        return null;
     }
 
     /**
      * Method returns collection of users
      *
-     * @param paging - pagination settings
      * @return users collection
      */
     @Override
-    public List<User> getAll(Paging paging) {
+    public List<User> getAll() {
         Connection connection = null;
         List<User> list = new ArrayList<>();
         List<Integer> idList = new ArrayList<>();
@@ -112,8 +106,7 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = pool.getConnection();
             connection = pool.getConnection();
-            String paginationSql = selectAllSql + appendPagination(paging);
-            PreparedStatement statement = connection.prepareStatement(paginationSql);
+            PreparedStatement statement = connection.prepareStatement(selectAllSql);
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -308,99 +301,5 @@ public class UserDaoImpl implements UserDao {
             pool.releaseConnection(connection);
         }
         return false;
-    }
-
-    private String appendPagination(Paging paging) {
-
-        if (paging == null) {
-            return "";
-        }
-
-        int limit = paging.getCountPerPage();
-
-        int start = paging.getPageNumber() * paging.getCountPerPage() - 10;
-
-        // ORDER BY added to query because of using OFFSET and LIMIT make strange returning query
-        return " ORDER BY u.id ASC OFFSET " + start + " LIMIT " + limit + ";";
-    }
-
-    /**
-     * return number of queried rows from table
-     *
-     * @return number of queried rows from table
-     * @throws SQLException - if something wrong with connection or
-     *                      executing query
-     */
-    @Override
-    public Integer getTotal() throws SQLException {
-
-        Connection conn = pool.getConnection();
-        Statement st = conn.createStatement();
-
-        String sql = "SELECT COUNT(u.id) FROM library.users u WHERE 1=1 ";
-        int total = 0;
-
-        try (ResultSet rs = st.executeQuery(sql)) {
-            if (rs.next()) {
-                total = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage());
-        } finally {
-            pool.releaseConnection(conn);
-        }
-        return total;
-    }
-
-
-    /**
-     * Returns user object with current email
-     *
-     * @param email
-     * @return User with given email
-     * @throws SQLException
-     */
-    @Override
-    public User getByEmail(String email) throws SQLException {
-
-        Connection connection = pool.getConnection();
-
-        String query = "SELECT u.id, u.name, u.lastname, u.email, u.password, ro.id AS role_id, ro.name AS role_name " +
-                "FROM library.users u " +
-                "LEFT JOIN library.users_roles ur ON u.id = ur.user_id " +
-                "LEFT JOIN library.roles ro ON ur.role_id = ro.id " +
-                "WHERE u.email = ?";
-
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, email);
-        try (ResultSet resultSet = statement.executeQuery()) {
-
-            if (!resultSet.next()) {
-                return null;
-            }
-
-            User user = new User();
-            user.setId(resultSet.getInt("id"))
-                    .setEmail(resultSet.getString("email"))
-                    .setPassword(resultSet.getString("password"))
-                    .setName(resultSet.getString("name"))
-                    .setLastName(resultSet.getString("lastname"));
-
-            Set<Role> roles = new HashSet<>();
-            do {
-                Role role = new Role();
-                role.setId(resultSet.getInt("role_id"))
-                        .setName(resultSet.getString("role_name"));
-                roles.add(role);
-            } while (resultSet.next());
-            user.setRoles(roles);
-
-            return user;
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-        } finally {
-            pool.releaseConnection(connection);
-        }
-        return null;
     }
 }

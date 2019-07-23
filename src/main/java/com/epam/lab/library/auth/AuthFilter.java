@@ -37,15 +37,20 @@ public class AuthFilter implements Filter {
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
         final HttpServletResponse res = (HttpServletResponse) servletResponse;
 
+        @SuppressWarnings("unchecked") final AtomicReference<UserDao> userDao = (AtomicReference<UserDao>) req.getServletContext().getAttribute("userDao");
+
         final HttpSession session = req.getSession();
 
         boolean isStaticResource = req.getRequestURI().startsWith("/static/");
         boolean isLoginRequested = req.getRequestURI().startsWith("/login");
+        boolean isRegisterRequested = req.getRequestURI().startsWith("/registernew");
 
         if (isStaticResource) {
             filterChain.doFilter(req, res);
         } else if (isLoginRequested) {
             req.getRequestDispatcher("/login").forward(req, res);
+        } else if (isRegisterRequested) {
+            req.getRequestDispatcher("/user/registernew").forward(req, res);
         } else if (nonNull(session) &&
                 nonNull(session.getAttribute("email")) &&
                 nonNull(session.getAttribute("password"))) {
