@@ -23,9 +23,8 @@
 </div>
 
 <div>
-    <form class="btnsLine" th:action="@{/findProduct}" method="post">
-        <input type="text" name="bookName" placeholder="Book's name">
-        <input type="text" name="authorName" placeholder="Author's name">
+    <form class="btnsLine" action='${pageContext.request.contextPath}/author/find' method="post">
+        <input type="text" name="authorLastName" placeholder="Author's last name">
         <input class="frmBtn orange" type="submit" value="Filter"/>
     </form>
 </div>

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -82,7 +83,7 @@ public class BookController extends HttpServlet {
                 break;
             default:
                 response.sendRedirect("/");
-                logger.warn("Page doesn't exist: " + request.getPathInfo());
+                logger.warn("GET Page doesn't exist: " + request.getPathInfo());
         }
     }
 
@@ -93,6 +94,7 @@ public class BookController extends HttpServlet {
         request.setAttribute("hasAdminRole", hasAdminRole);
         String[] info = resolver.getViewPath(request);
         String type = info[0];
+        String view = info[1];
         Integer id;
         String bookName;
         String bookDescription;
@@ -101,6 +103,19 @@ public class BookController extends HttpServlet {
         User user;
         Book book;
         switch (type) {
+            case "all":
+                request.getRequestDispatcher(view).forward(request, response);
+                break;
+            case "find":
+                bookName = request.getParameter("bookName");
+                logger.warn("bookName: " + request.getParameter("bookName"));
+                String authorLastName = request.getParameter("authorLastName");
+                logger.warn("authorName: " + request.getParameter("authorLastName"));
+                List<Book> books = bookService.findByNameAndAuthorLastName(bookName, authorLastName);
+                request.setAttribute("books", books);
+                request.getRequestDispatcher(view).forward(request, response);
+                //response.sendRedirect("/book/all");
+                break;
             case "order":
                 user = (User) request.getSession().getAttribute("user");
                 if (user != null) {
@@ -158,20 +173,22 @@ public class BookController extends HttpServlet {
                 response.sendRedirect("/book/all");
                 break;
             case "delete":
-                try {
-                    id = Integer.parseInt(request.getParameter("bookId"));
-                } catch (NumberFormatException e) {
-                    response.sendRedirect("/book/all");
-                    logger.error("Something gone wrong", e);
-                    break;
+                if (hasAdminRole) {
+                    try {
+                        id = Integer.parseInt(request.getParameter("bookId"));
+                    } catch (NumberFormatException e) {
+                        response.sendRedirect("/book/all");
+                        logger.error("Something gone wrong", e);
+                        break;
+                    }
+                    book = bookService.getById(id);
+                    bookService.delete(book);
                 }
-                book = bookService.getById(id);
-                bookService.delete(book);
                 response.sendRedirect("/book/all");
                 break;
             default:
                 response.sendRedirect("/");
-                logger.warn("Page doesn't exist: " + request.getPathInfo());
+                logger.warn("POST Page doesn't exist: " + request.getPathInfo());
 
         }
     }

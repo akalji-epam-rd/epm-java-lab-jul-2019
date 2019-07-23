@@ -1,6 +1,8 @@
 package com.epam.lab.library.service;
 
+import com.epam.lab.library.dao.AuthorDaoImpl;
 import com.epam.lab.library.dao.BookDaoImpl;
+import com.epam.lab.library.dao.interfaces.AuthorDao;
 import com.epam.lab.library.dao.interfaces.BookDao;
 import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Book;
@@ -21,6 +23,7 @@ public class BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
     ConnectionPool pool = ConnectionPool.getInstance();
     private BookDao bookDao = new BookDaoImpl();
+    private AuthorDao authorDao = new AuthorDaoImpl();
 
     /**
      * @return all books in table
@@ -41,6 +44,15 @@ public class BookService {
     public Book getById(int id) {
         try {
             return bookDao.getById(id);
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public List<Book> findByNameAndAuthorLastName(String bookName, String authorLastName) {
+        try {
+            return bookDao.findByNameAndAuthorLastName(bookName, authorLastName);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             return null;

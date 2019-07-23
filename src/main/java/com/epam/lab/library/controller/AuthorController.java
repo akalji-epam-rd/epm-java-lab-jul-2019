@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -89,6 +90,13 @@ public class AuthorController extends HttpServlet {
         String authorLastName;
         Author author;
         switch (type) {
+            case "find":
+                authorLastName = request.getParameter("authorLastName");
+                //List<Author> authors = authorService.findByNameAndAuthorLastName(bookName, authorLastName);
+                //request.setAttribute("authors", authors);
+                response.sendRedirect("/author/all");
+                //request.getRequestDispatcher("/WEB-INF/views/author/all").forward(request, response);
+                break;
             case "add":
                 if (hasAdminRole) {
                     authorName = request.getParameter("name");
