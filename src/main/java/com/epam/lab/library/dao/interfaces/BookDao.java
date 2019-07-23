@@ -14,6 +14,8 @@ public interface BookDao {
 
     Book getById(int id) throws SQLException;
 
+    List<Book> findByNameAndAuthorLastName(String name, String authorLastName) throws SQLException;
+
     Integer save(Book book) throws SQLException;
 
     Integer update(Book book) throws SQLException;

@@ -60,9 +60,9 @@ public class AuthorDaoImpl implements AuthorDao {
                     }
                 } else {
                     Author author = new Author();
-                    author.setId(resultSet.getInt("id"))
-                            .setName(resultSet.getString("name"))
-                            .setLastName(resultSet.getString("lastname"));
+                    author.setId(resultSet.getInt("a_id"))
+                            .setName(resultSet.getString("a_name"))
+                            .setLastName(resultSet.getString("a_lastname"));
                     Set<Book> books = new HashSet<>();
                     books.add(book);
                     author.setBooks(books);
@@ -122,6 +122,65 @@ public class AuthorDaoImpl implements AuthorDao {
             author.setBooks(books);
             return author;
 
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Author> findByLastName(String lastName) throws SQLException {
+        Connection connection = pool.getConnection();
+
+        String query = "SELECT authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname, " +
+                "books.id as b_id, books.name as b_name, description as b_description " +
+                "FROM library.authors " +
+                "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
+                "LEFT JOIN library.books ON authors_books.book_id = books.id";
+
+        if (lastName != null) {
+            query += " WHERE authors.lastname LIKE ?";
+        }
+        PreparedStatement statement = connection.prepareStatement(query);
+        if (lastName != null) {
+            statement.setString(1, "%" + lastName + "%");
+        }
+        try (ResultSet resultSet = statement.executeQuery()) {
+
+            List<Author> authors = new ArrayList<>();
+            ArrayList<Integer> identifies = new ArrayList<>();
+
+            while (resultSet.next()) {
+
+                Book book = new Book();
+                book.setId(resultSet.getInt("b_id"))
+                        .setName(resultSet.getString("b_name"))
+                        .setDescription(resultSet.getString("b_description"));
+
+                Integer authorId = resultSet.getInt("b_id");
+
+                if (identifies.contains(authorId)) {
+                    for (Author author : authors) {
+                        if (author.getId() == authorId) {
+                            author.getBooks().add(book);
+                        }
+                    }
+                } else {
+                    Author author = new Author();
+                    author.setId(resultSet.getInt("a_id"))
+                            .setName(resultSet.getString("a_name"))
+                            .setLastName(resultSet.getString("a_lastname"));
+                    Set<Book> books = new HashSet<>();
+                    books.add(book);
+                    author.setBooks(books);
+                    authors.add(author);
+                    identifies.add(authorId);
+                }
+            }
+
+            return authors;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
         } finally {

@@ -7,7 +7,6 @@
 
     <title>Books</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" type="text/css" href="../../../static/css/pretty.css">
     <link rel="stylesheet" type="text/css" href="../../../static/css/bootstrap.min.css">
 
 </head>
@@ -18,44 +17,73 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-<div class="btnsLine">
-    <a class="frmBtn" href="/add">Add new book</a>
-    <a class="frmBtn" href="/author/add">Add new author</a>
-</div>
-
 <div>
-    <form class="btnsLine" th:action="@{/findProduct}" method="post">
-        <input type="text" name="bookName" placeholder="Book's name">
-        <input type="text" name="authorName" placeholder="Author's name">
-        <input class="frmBtn orange" type="submit" value="Filter"/>
+    <form class="form-horizontal" action='${pageContext.request.contextPath}/book/find' method="POST">
+        <fieldset>
+            <div id="legend">
+                <legend class="">Find book</legend>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="bookName">Name</label>
+                <div class="controls">
+                    <input type="text" id="bookName" name="bookName" placeholder="" class="input-xlarge">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="authorLastName">Author</label>
+                <div class="controls">
+                    <input type="text" id="authorLastName" name="authorLastName" placeholder="" class="input-xlarge">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-success">Filter</button>
+                </div>
+            </div>
+        </fieldset>
     </form>
 </div>
 
-<div class="table">
-    <table>
+<div class="container">
+    <table class="table table-striped">
 
         <thead>
         <tr>
             <th>Name</th>
             <th>Description</th>
             <th>Authors</th>
-            <th></th>
-            <th></th>
         </tr>
         </thead>
 
         <tbody>
         <c:forEach items="${books}" var="book">
             <tr>
-                <td><c:out value="${book.name}"/></td>
+                <td><a href="/book/get/${book.id}"> <c:out value="${book.name}"/></a></td>
                 <td><c:out value="${book.description}"/></td>
                 <td>
                     <c:forEach items="${book.authors}" var="author">
-                        <span><c:out value="${author.name} ${author.lastName}"/></span>
+                        <span><a href="/author/get/${author.id}"><c:out value="${author.name} ${author.lastName}"/></a></span>
                     </c:forEach>
                 </td>
-                <td><a class="fn edit" th:href="@{/editProduct(id=${product.id})}" title="Edit">&rsaquo;</a></td>
-                <td><a class="fn delete" th:href="@{/deleteProduct(id=${product.id})}" title="Delete">&times;</a></td>
+                <c:if test="${hasAdminRole}">
+                    <td>
+                        <a href="/book/edit/${book.id}">
+                            <button class="btn btn-primary trn">Edit book
+                            </button>
+                        </a>
+                    </td>
+                    <td>
+
+                        <form method="POST">
+                            <button class="btn btn-danger trn" name="bookId" value="${book.id}">
+                                Delete book
+                            </button>
+                        </form>
+
+                    </td>
+                </c:if>
             </tr>
         </c:forEach>
         </tbody>

@@ -94,6 +94,10 @@ public class ConnectionPool {
      */
     public synchronized void releaseConnection(Connection connection) {
 
+        if (connection == null) {
+            return;
+        }
+
         try {
             if (availableConnections.size() < CAPACITY & !connection.isClosed()) {
                 try {

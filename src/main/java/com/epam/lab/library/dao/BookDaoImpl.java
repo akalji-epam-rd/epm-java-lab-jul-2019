@@ -129,6 +129,76 @@ public class BookDaoImpl implements BookDao {
         return null;
     }
 
+    @Override
+    public List<Book> findByNameAndAuthorLastName(String name, String authorLastName) throws SQLException {
+
+        Connection connection = pool.getConnection();
+
+        String query = "SELECT books.id as b_id, books.name as b_name, description as b_description, " +
+                "authors.id as a_id, authors.name as a_name, authors.lastname as a_lastname " +
+                "FROM library.books " +
+                "LEFT JOIN library.authors_books ON books.id = authors_books.book_id " +
+                "LEFT JOIN library.authors ON authors_books.author_id = authors.id";
+        if (name != null && authorLastName != null) {
+            query += " WHERE books.name LIKE ? AND authors.lastname LIKE ?";
+        } else if (name != null && authorLastName == null) {
+            query += " WHERE books.name LIKE ?";
+        } else if (name == null && authorLastName != null) {
+            query += " WHERE authors.lastname LIKE ?";
+        }
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        if (name != null && authorLastName != null) {
+            statement.setString(1, "%" + name + "%");
+            statement.setString(2, "%" + authorLastName + "%");
+        } else if (name != null && authorLastName == null) {
+            statement.setString(1, "%" + name + "%");
+        } else if (name == null && authorLastName != null) {
+            statement.setString(1, "%" + authorLastName + "%");
+        }
+        try (ResultSet resultSet = statement.executeQuery()) {
+
+            List<Book> books = new ArrayList<>();
+            ArrayList<Integer> identifies = new ArrayList<>();
+
+            while (resultSet.next()) {
+
+                Author author = new Author();
+                author.setId(resultSet.getInt("a_id"))
+                        .setName(resultSet.getString("a_name"))
+                        .setLastName(resultSet.getString("a_lastname"));
+
+                Integer bookId = resultSet.getInt("b_id");
+
+                if (identifies.contains(bookId)) {
+                    for (Book book : books) {
+                        if (book.getId() == bookId) {
+                            book.getAuthors().add(author);
+                        }
+                    }
+                } else {
+                    Book book = new Book();
+                    book.setId(resultSet.getInt("b_id"))
+                            .setName(resultSet.getString("b_name"))
+                            .setDescription(resultSet.getString("b_description"));
+                    Set<Author> authors = new HashSet<>();
+                    authors.add(author);
+                    book.setAuthors(authors);
+                    books.add(book);
+                    identifies.add(bookId);
+                }
+            }
+
+            return books;
+
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return null;
+    }
+
     /**
      * Saves given book in database
      *

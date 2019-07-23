@@ -3,7 +3,7 @@
 <html>
 <head>
 
-    <title>Add author</title>
+    <title>Add book</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="../../../static/css/bootstrap.min.css">
 
@@ -14,12 +14,12 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-<h2 class="header">Add new author</h2>
+<h2 class="header">Add new book</h2>
 
-<form class="form-horizontal" action='${pageContext.request.contextPath}/author/add' method="POST">
+<form class="form-horizontal" action='${pageContext.request.contextPath}/book/add' method="POST">
     <fieldset>
         <div id="legend">
-            <legend class="">Add new author</legend>
+            <legend class="">Add new book</legend>
         </div>
         <div class="control-group">
             <label class="control-label" for="name">Name</label>
@@ -29,15 +29,21 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="lastname">Description</label>
+            <label class="control-label" for="description">Description</label>
             <div class="controls">
-                <input type="text" id="lastname" name="lastname" placeholder="" class="input-xlarge">
+                <textarea type="text" id="description" name="description" placeholder="" class="input-xlarge"></textarea>
             </div>
         </div>
 
+        <select name="authors" multiple>
+            <c:forEach items="${authors}" var="author">
+                <option value="${author.id}">${author.name} ${author.lastName}</option>
+            </c:forEach>
+        </select>
+
         <div class="control-group">
             <div class="controls">
-                <button type="submit" class="btn btn-success">Add author</button>
+                <button type="submit" class="btn btn-success">Add Book</button>
             </div>
         </div>
     </fieldset>
