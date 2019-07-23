@@ -18,15 +18,21 @@
     <div><c:out value="${book.name}"/></div>
     <div><c:out value="${book.description}"/></div>
 
-
-    <a href="/book/edit/${book.id}">Edit book</a>
+    <c:if test="${hasAdminRole}">
+        <a href="/book/edit/${book.id}">
+            <button class="btn btn-primary trn">Edit book
+            </button>
+        </a>
+        <form method="POST">
+            <button class="btn btn-danger trn" name="bookId" value="${book.id}">
+                Delete book
+            </button>
+        </form>
+    </c:if>
 
     <form method="POST" action="/book/order/">
         <button type="submit" name="bookId" value="${book.id}">Order</button>
     </form>
 
-    <form method="POST" action="/book/delete/">
-         <button type="submit" name="bookId" value="${book.id}">Edit</button>
-    </form>
 </body>
 </html>
