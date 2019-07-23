@@ -17,15 +17,25 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-<div class="btnsLine">
-    <a class="frmBtn" href="/book/add">Add new book</a>
-    <a class="frmBtn" href="/author/add">Add new author</a>
-</div>
-
 <div>
-    <form class="btnsLine" action='${pageContext.request.contextPath}/author/find' method="post">
-        <input type="text" name="authorLastName" placeholder="Author's last name">
-        <input class="frmBtn orange" type="submit" value="Filter"/>
+    <form class="form-horizontal" action='${pageContext.request.contextPath}/author/find' method="POST">
+        <fieldset>
+            <div id="legend">
+                <legend class="">Find Author</legend>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="authorLastName">Name</label>
+                <div class="controls">
+                    <input type="text" id="authorLastName" name="authorLastName" placeholder="" class="input-xlarge">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-success">Filter</button>
+                </div>
+            </div>
+        </fieldset>
     </form>
 </div>
 
@@ -35,7 +45,7 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>LastName</th>
+            <th>Last name</th>
             <th></th>
             <th></th>
         </tr>
@@ -47,7 +57,8 @@
                 <td><c:out value="${author.name}"/></td>
                 <td><c:out value="${author.lastName}"/></td>
                 <td><a href="/author/edit/${author.id}" title="Edit">&rsaquo;</a></td>
-                <td><a class="fn delete" th:href="@{/deleteProduct(id=${product.id})}" title="Delete">&times;</a></td>
+                <td><form action="/author/edit/${author.id}" method="post" target="myFrame" id="myForm"></form></td>
+                <%--<td><a class="fn delete" th:href="@{/deleteProduct(id=${product.id})}" title="Delete">&times;</a></td>--%>
             </tr>
         </c:forEach>
         </tbody>

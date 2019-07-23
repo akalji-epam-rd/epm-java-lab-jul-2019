@@ -21,7 +21,7 @@ import java.util.List;
 public class BookService {
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-    ConnectionPool pool = ConnectionPool.getInstance();
+    private ConnectionPool pool = ConnectionPool.getInstance();
     private BookDao bookDao = new BookDaoImpl();
     private AuthorDao authorDao = new AuthorDaoImpl();
 

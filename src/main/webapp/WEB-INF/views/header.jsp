@@ -33,9 +33,12 @@
 
         <ul class="nav navbar-nav">
             <li><a href="<c:url value='/book/all'/>">Books</a></li>
+            <li><a href="<c:url value='/author/all'/>">Authors</a></li>
             <c:if test="${hasAdminRole == true}">
                 <li><a href="<c:url value='/item/all'/>">Items</a></li>
                 <li><a href="<c:url value='/user/all'/>">Users</a></li>
+                <li><a href="<c:url value='/book/add'/>">Add book</a></li>
+                <li><a href="<c:url value='/author/add'/>">Add author</a></li>
             </c:if>
         </ul>
 

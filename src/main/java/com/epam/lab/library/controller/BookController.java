@@ -31,10 +31,10 @@ import java.util.Set;
 public class BookController extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
-    ViewResolver resolver = new ViewResolver();
-    BookService bookService = new BookService();
-    AuthorService authorService = new AuthorService();
-    ItemService itemService = new ItemServiceImpl();
+    private ViewResolver resolver = new ViewResolver();
+    private BookService bookService = new BookService();
+    private AuthorService authorService = new AuthorService();
+    private ItemService itemService = new ItemServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,7 +47,13 @@ public class BookController extends HttpServlet {
         Integer id;
         switch (type) {
             case "all":
-                request.setAttribute("books", bookService.getAll());
+                if (request.getSession().getAttribute("books") == null) {
+                    request.setAttribute("books", bookService.getAll());
+                } else {
+                    List<Book> books = (List<Book>) request.getSession().getAttribute("books");
+                    request.setAttribute("books", books);
+                    request.getSession().removeAttribute("books");
+                }
                 request.getRequestDispatcher(view).forward(request, response);
                 break;
             case "get":
@@ -108,13 +114,10 @@ public class BookController extends HttpServlet {
                 break;
             case "find":
                 bookName = request.getParameter("bookName");
-                logger.warn("bookName: " + request.getParameter("bookName"));
                 String authorLastName = request.getParameter("authorLastName");
-                logger.warn("authorName: " + request.getParameter("authorLastName"));
                 List<Book> books = bookService.findByNameAndAuthorLastName(bookName, authorLastName);
-                request.setAttribute("books", books);
-                request.getRequestDispatcher(view).forward(request, response);
-                //response.sendRedirect("/book/all");
+                request.getSession().setAttribute("books", books);
+                response.sendRedirect("/book/all");
                 break;
             case "order":
                 user = (User) request.getSession().getAttribute("user");

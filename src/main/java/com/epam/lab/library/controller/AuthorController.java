@@ -26,8 +26,8 @@ import java.util.Set;
 public class AuthorController extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
-    ViewResolver resolver = new ViewResolver();
-    AuthorService authorService = new AuthorService();
+    private ViewResolver resolver = new ViewResolver();
+    private AuthorService authorService = new AuthorService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,7 +40,13 @@ public class AuthorController extends HttpServlet {
         Integer id;
         switch (type) {
             case "all":
-                request.setAttribute("authors", authorService.getAll());
+                if (request.getSession().getAttribute("authors") == null) {
+                    request.setAttribute("authors", authorService.getAll());
+                } else {
+                    List<Author> authors = (List<Author>)request.getSession().getAttribute("authors");
+                    request.setAttribute("authors", authors);
+                    request.getSession().removeAttribute("authors");
+                }
                 request.getRequestDispatcher(view).forward(request, response);
                 break;
             case "get":
@@ -92,10 +98,9 @@ public class AuthorController extends HttpServlet {
         switch (type) {
             case "find":
                 authorLastName = request.getParameter("authorLastName");
-                //List<Author> authors = authorService.findByNameAndAuthorLastName(bookName, authorLastName);
-                //request.setAttribute("authors", authors);
+                List<Author> authors = authorService.findByLastName(authorLastName);
+                request.getSession().setAttribute("authors", authors);
                 response.sendRedirect("/author/all");
-                //request.getRequestDispatcher("/WEB-INF/views/author/all").forward(request, response);
                 break;
             case "add":
                 if (hasAdminRole) {

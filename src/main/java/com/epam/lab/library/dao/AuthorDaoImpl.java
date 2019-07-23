@@ -138,11 +138,15 @@ public class AuthorDaoImpl implements AuthorDao {
                 "books.id as b_id, books.name as b_name, description as b_description " +
                 "FROM library.authors " +
                 "LEFT JOIN library.authors_books ON authors.id = authors_books.author_id " +
-                "LEFT JOIN library.books ON authors_books.book_id = books.id " +
-                "WHERE authors.lastname LIKE %?%";
+                "LEFT JOIN library.books ON authors_books.book_id = books.id";
 
+        if (lastName != null) {
+            query += " WHERE authors.lastname LIKE ?";
+        }
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, lastName);
+        if (lastName != null) {
+            statement.setString(1, "%" + lastName + "%");
+        }
         try (ResultSet resultSet = statement.executeQuery()) {
 
             List<Author> authors = new ArrayList<>();

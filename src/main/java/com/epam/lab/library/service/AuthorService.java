@@ -49,6 +49,15 @@ public class AuthorService {
         }
     }
 
+    public List<Author> findByLastName(String lastName) {
+        try {
+            return authorDao.findByLastName(lastName);
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
     /**
      * Creates record in table books and respective records in table authors_books
      *

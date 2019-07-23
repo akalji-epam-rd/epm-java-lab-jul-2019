@@ -17,11 +17,6 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-<div class="btnsLine">
-    <a class="frmBtn" href="/book/add">Add new book</a>
-    <a class="frmBtn" href="/author/add">Add new author</a>
-</div>
-
 <div>
     <form class="form-horizontal" action='${pageContext.request.contextPath}/book/find' method="POST">
         <fieldset>
