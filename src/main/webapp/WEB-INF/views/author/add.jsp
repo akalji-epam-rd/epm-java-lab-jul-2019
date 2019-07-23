@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="row">
-                        <div class="col-sm-6 col-md-4">
+                       <div class="col-sm-6 col-md-4">
                                 <label class="control-label" for="name">Name</label>
                                     <div class="controls">
                                <input type="text" id="name" name="name" placeholder="" class="input-xlarge">
