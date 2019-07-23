@@ -20,9 +20,11 @@
 <div class="container">
     <h2>Library Users</h2>
 
+    <a href="/user/register">
     <button class="btn btn-primary" id="addUserBtn" type="submit">
         Add User
     </button>
+    </a>
 
     <div>
         <table id="users_table" class="table table-striped">

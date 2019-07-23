@@ -43,9 +43,8 @@ public class UserController extends HttpServlet {
                 getAll(request, response);
                 break;
             case "register":
+            case "registernew":
                 register(request, response);
-                break;
-            case "edit":
                 break;
             default:
                 response.sendRedirect("/");
@@ -97,6 +96,7 @@ public class UserController extends HttpServlet {
 
         boolean hasAdminRole = RoleUtil.hasRole("Administrator", roles);
         if (!hasAdminRole) {
+            request.getRequestDispatcher("/WEB-INF/views/user/registernew.jsp").forward(request, response);
             return;
         }
         request.setAttribute("hasAdminRole", hasAdminRole);
@@ -108,7 +108,7 @@ public class UserController extends HttpServlet {
         } catch (SQLException e) {
             LOG.error(e.getMessage());
         }
-        request.getRequestDispatcher("/WEB-INF/views/user/register.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/user/add.jsp").forward(request, response);
     }
 
     private void addUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
