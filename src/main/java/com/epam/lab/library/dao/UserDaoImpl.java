@@ -5,7 +5,6 @@ import com.epam.lab.library.dao.interfaces.UserDao;
 import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.domain.User;
 import com.epam.lab.library.util.connectionpool.ConnectionPool;
-import com.epam.lab.library.util.pagination.Paging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
