@@ -15,24 +15,44 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-    <div><c:out value="${book.name}"/></div>
-    <div><c:out value="${book.description}"/></div>
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="well well-sm">
+            <div class="row">
+                <div class="col-sm-6 col-md-4">
+                    <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive"/>
+                </div>
+                <div class="col-sm-6 col-md-8">
+                    <h4>${book.name}</h4>
+                    <p>${book.description}<br/>
+                </div>
+                <c:if test="${hasAdminRole}">
+                <div class="col-sm-6 col-md-8">
 
-    <c:if test="${hasAdminRole}">
-        <a href="/book/edit/${book.id}">
-            <button class="btn btn-primary trn">Edit book
-            </button>
-        </a>
-        <form method="POST">
-            <button class="btn btn-danger trn" name="bookId" value="${book.id}">
-                Delete book
-            </button>
-        </form>
-    </c:if>
+                        <a href="/book/edit/${book.id}">
+                            <button class="btn btn-primary trn">Edit book
+                            </button>
+                        </a>
+                </div>
+                <div class="col-sm-6 col-md-8">
+                    <form method="POST">
+                        <button class="btn btn-danger trn" name="bookId" value="${book.id}">
+                            Delete book
+                        </button>
+                    </form>
+                </div>
+                </c:if>
+                <div class="col-sm-6 col-md-8">
+                    <form method="POST" action="/book/order/">
+                        <button class="btn btn-default trn" type="submit" name="bookId" value="${book.id}">Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <form method="POST" action="/book/order/">
-        <button type="submit" name="bookId" value="${book.id}">Order</button>
-    </form>
+
 
 </body>
 </html>

@@ -16,38 +16,55 @@
 
 <h2 class="header">Add new book</h2>
 
-<form class="form-horizontal" action='${pageContext.request.contextPath}/book/add' method="POST">
-    <fieldset>
-        <div id="legend">
-            <legend class="">Add new book</legend>
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="well well-sm">
+            <form class="form-horizontal" action='${pageContext.request.contextPath}/book/add' method="POST">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <legend class="">Add new book</legend>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <label class="control-label" for="name">Name</label>
+                        <div class="controls">
+                            <input type="text" id="name" name="name" placeholder="" class="input-xlarge">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <c:if test="${hasAdminRole}">
+                    <div class="col-sm-6 col-md-4">
+                        <label class="control-label" for="description">Description</label>
+                        <div class="controls">
+                                <textarea type="text" id="description" name="description" placeholder=""
+                                          class="input-xlarge"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <select name="authors" multiple>
+                            <c:forEach items="${authors}" var="author">
+                                <option value="${author.id}">${author.name} ${author.lastName}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    </c:if>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-success">Add Book</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="name">Name</label>
-            <div class="controls">
-                <input type="text" id="name" name="name" placeholder="" class="input-xlarge">
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="description">Description</label>
-            <div class="controls">
-                <textarea type="text" id="description" name="description" placeholder="" class="input-xlarge"></textarea>
-            </div>
-        </div>
-
-        <select name="authors" multiple>
-            <c:forEach items="${authors}" var="author">
-                <option value="${author.id}">${author.name} ${author.lastName}</option>
-            </c:forEach>
-        </select>
-
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-success">Add Book</button>
-            </div>
-        </div>
-    </fieldset>
-</form>
+    </div>
+</div>
+</div>
 
 </body>
 </html>
