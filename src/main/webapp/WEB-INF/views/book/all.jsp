@@ -47,30 +47,43 @@
 </div>
 
 <div class="container">
-    <table>
+    <table class="table table-striped">
 
         <thead>
         <tr>
             <th>Name</th>
             <th>Description</th>
             <th>Authors</th>
-            <th></th>
-            <th></th>
         </tr>
         </thead>
 
         <tbody>
         <c:forEach items="${books}" var="book">
             <tr>
-                <td><c:out value="${book.name}"/></td>
+                <td><a href="/book/get/${book.id}"> <c:out value="${book.name}"/></a></td>
                 <td><c:out value="${book.description}"/></td>
                 <td>
                     <c:forEach items="${book.authors}" var="author">
-                        <span><c:out value="${author.name} ${author.lastName}"/></span>
+                        <span><a href="/author/get/${author.id}"><c:out value="${author.name} ${author.lastName}"/></a></span>
                     </c:forEach>
                 </td>
-                <td><a class="fn edit" th:href="@{/editProduct(id=${product.id})}" title="Edit">&rsaquo;</a></td>
-                <td><a class="fn delete" th:href="@{/deleteProduct(id=${product.id})}" title="Delete">&times;</a></td>
+                <c:if test="${hasAdminRole}">
+                    <td>
+                        <a href="/book/edit/${book.id}">
+                            <button class="btn btn-primary trn">Edit book
+                            </button>
+                        </a>
+                    </td>
+                    <td>
+
+                        <form method="POST">
+                            <button class="btn btn-danger trn" name="bookId" value="${book.id}">
+                                Delete book
+                            </button>
+                        </form>
+
+                    </td>
+                </c:if>
             </tr>
         </c:forEach>
         </tbody>

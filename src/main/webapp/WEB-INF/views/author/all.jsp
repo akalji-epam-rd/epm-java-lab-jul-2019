@@ -5,7 +5,7 @@
 <html>
 <head>
 
-    <title>Authors</title>
+    <title>Books</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="../../../static/css/bootstrap.min.css">
 
@@ -21,12 +21,12 @@
     <form class="form-horizontal" action='${pageContext.request.contextPath}/author/find' method="POST">
         <fieldset>
             <div id="legend">
-                <legend class="">Find Author</legend>
+                <legend class="">Find book</legend>
             </div>
             <div class="control-group">
-                <label class="control-label" for="authorLastName">Name</label>
+                <label class="control-label" for="authorName">Name</label>
                 <div class="controls">
-                    <input type="text" id="authorLastName" name="authorLastName" placeholder="" class="input-xlarge">
+                    <input type="text" id="authorName" name="authorName" placeholder="" class="input-xlarge">
                 </div>
             </div>
 
@@ -40,25 +40,38 @@
 </div>
 
 <div class="container">
-    <table>
+    <table class="table table-striped">
 
         <thead>
         <tr>
             <th>Name</th>
-            <th>Last name</th>
-            <th></th>
-            <th></th>
+            <th>Last Name</th>
         </tr>
         </thead>
 
         <tbody>
         <c:forEach items="${authors}" var="author">
             <tr>
-                <td><c:out value="${author.name}"/></td>
-                <td><c:out value="${author.lastName}"/></td>
-                <td><a href="/author/edit/${author.id}" title="Edit">&rsaquo;</a></td>
-                <td><form action="/author/edit/${author.id}" method="post" target="myFrame" id="myForm"></form></td>
-                <%--<td><a class="fn delete" th:href="@{/deleteProduct(id=${product.id})}" title="Delete">&times;</a></td>--%>
+                <td><a href="/author/get/${author.id}"> <c:out value="${author.name}"/></a></td>
+                <td><a href="/author/get/${author.id}"> <c:out value="${author.lastName}"/></a></td>
+
+                <c:if test="${hasAdminRole}">
+                    <td>
+                        <a href="/author/edit/${author.id}">
+                            <button class="btn btn-primary trn">Edit author
+                            </button>
+                        </a>
+                    </td>
+                    <td>
+
+                        <form method="POST">
+                            <button class="btn btn-danger trn" name="authorId" value="${author.id}">
+                                Delete author
+                            </button>
+                        </form>
+
+                    </td>
+                </c:if>
             </tr>
         </c:forEach>
         </tbody>
