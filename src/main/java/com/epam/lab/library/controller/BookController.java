@@ -93,7 +93,6 @@ public class BookController extends HttpServlet {
         request.setAttribute("hasAdminRole", hasAdminRole);
         String[] info = resolver.getViewPath(request);
         String type = info[0];
-        String view = info[1];
         Integer id;
         String bookName;
         String bookDescription;
@@ -104,39 +103,42 @@ public class BookController extends HttpServlet {
         switch (type) {
             case "order":
                 user = (User) request.getSession().getAttribute("user");
-                book = bookService.getById(Integer.parseInt(request.getParameter("bookId")));
-                try {
-                    boolean success = itemService.orderBook(book, user);
-                    if (success) {
-                        response.sendRedirect("/book/all");
-                    } else {
-                        request.setAttribute("message", "All books are taken");
+                if (user != null) {
+                    book = bookService.getById(Integer.parseInt(request.getParameter("bookId")));
+                    try {
+                        boolean success = itemService.orderBook(book, user);
+                        if (success) {
+                            response.sendRedirect("/book/all");
+                        } else {
+                            request.setAttribute("message", "All books are taken");
+                        }
+                    } catch (SQLException e) {
+                        logger.error(e.getMessage(), e);
                     }
-                } catch (SQLException e) {
-                    logger.error(e.getMessage(), e);
+                } else {
+                    response.sendRedirect("/login");
                 }
                 break;
             case "add":
-                bookName = request.getParameter("name");
-                bookDescription = request.getParameter("description");
-                authorIds = request.getParameterValues("authors");
-                authors = new HashSet<>();
-                for (String authorIdString : authorIds) {
-                    Integer authorId = Integer.parseInt(authorIdString);
-                    authors.add(authorService.getById(authorId));
+                if (hasAdminRole) {
+                    bookName = request.getParameter("name");
+                    bookDescription = request.getParameter("description");
+                    authorIds = request.getParameterValues("authors");
+                    authors = new HashSet<>();
+                    for (String authorIdString : authorIds) {
+                        Integer authorId = Integer.parseInt(authorIdString);
+                        authors.add(authorService.getById(authorId));
+                    }
+                    book = new Book();
+                    book.setName(bookName)
+                            .setDescription(bookDescription)
+                            .setAuthors(authors);
+                    bookService.save(book);
                 }
-                book = new Book();
-                book.setName(bookName)
-                        .setDescription(bookDescription)
-                        .setAuthors(authors);
-                bookService.save(book);
                 response.sendRedirect("/book/all");
                 break;
             case "edit":
-                if (!hasAdminRole) {
-                    response.sendRedirect("/book/all");
-                    break;
-                } else {
+                if (hasAdminRole) {
                     id = Integer.parseInt(request.getParameter("id"));
                     bookName = request.getParameter("name");
                     bookDescription = request.getParameter("description");

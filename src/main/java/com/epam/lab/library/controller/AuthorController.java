@@ -1,5 +1,6 @@
 package com.epam.lab.library.controller;
 
+import com.epam.lab.library.domain.Author;
 import com.epam.lab.library.domain.Role;
 import com.epam.lab.library.domain.User;
 import com.epam.lab.library.service.AuthorService;
@@ -35,34 +36,41 @@ public class AuthorController extends HttpServlet {
         String[] info = resolver.getViewPath(request);
         String type = info[0];
         String view = info[1];
-        Integer id = resolver.getIdFromRequest(request);
+        Integer id;
         switch (type) {
             case "all":
                 request.setAttribute("authors", authorService.getAll());
                 request.getRequestDispatcher(view).forward(request, response);
                 break;
             case "get":
+                id = resolver.getIdFromRequest(request);
                 if (id != null) {
                     request.setAttribute("author", authorService.getById(id));
-                    request.getRequestDispatcher(view).forward(request, response);
                 } else {
-                    response.sendRedirect("/author/all");
+                    request.setAttribute("message", "Book is absent");
                 }
-                break;
-            case "add":
                 request.getRequestDispatcher(view).forward(request, response);
                 break;
-            case "edit":
-                if (id != null) {
-                    request.setAttribute("author", authorService.getById(id));
-                }
+            case "add":
                 if (!hasAdminRole) {
-                    response.sendRedirect("/author/all");
-                    break;
+                    response.sendRedirect("/book/all");
                 } else {
                     request.getRequestDispatcher(view).forward(request, response);
-                    break;
                 }
+                break;
+            case "edit":
+                id = resolver.getIdFromRequest(request);
+                if (!hasAdminRole) {
+                    response.sendRedirect("/book/all");
+                } else {
+                    if (id != null) {
+                        request.setAttribute("author", authorService.getById(id));
+                    } else {
+                        request.setAttribute("message", "Book is absent");
+                    }
+                    request.getRequestDispatcher(view).forward(request, response);
+                }
+                break;
             default:
                 response.sendRedirect("/");
                 logger.warn("Page doesn't exist: " + request.getPathInfo());
@@ -76,21 +84,46 @@ public class AuthorController extends HttpServlet {
         request.setAttribute("hasAdminRole", hasAdminRole);
         String[] info = resolver.getViewPath(request);
         String type = info[0];
-        String view = info[1];
-        Integer id = resolver.getIdFromRequest(request);
-        User user = null;
+        Integer id;
+        String authorName;
+        String authorLastName;
+        Author author;
         switch (type) {
             case "add":
-
+                if (hasAdminRole) {
+                    authorName = request.getParameter("name");
+                    authorLastName = request.getParameter("lastname");
+                    author = new Author();
+                    author.setName(authorName)
+                            .setLastName(authorLastName);
+                    authorService.save(author);
+                }
+                response.sendRedirect("/author/all");
+                break;
             case "edit":
-                if (!hasAdminRole) {
+                if (hasAdminRole) {
+                    id = Integer.parseInt(request.getParameter("id"));
+                    authorName = request.getParameter("name");
+                    authorLastName = request.getParameter("lastname");
+                    author = new Author();
+                    author.setId(id)
+                            .setName(authorName)
+                            .setLastName(authorLastName);
+                    authorService.update(author);
+                }
+                response.sendRedirect("/author/all");
+                break;
+            case "delete":
+                try {
+                    id = Integer.parseInt(request.getParameter("authorId"));
+                } catch (NumberFormatException e) {
                     response.sendRedirect("/author/all");
+                    logger.error("Something gone wrong", e);
                     break;
                 }
-            case "delete":
-                id = resolver.getIdFromRequest(request);
-                authorService.delete(authorService.getById(id));
-                //TODO Add logic for delete
+                author = authorService.getById(id);
+                authorService.delete(author);
+                response.sendRedirect("/author/all");
                 break;
             default:
                 response.sendRedirect("/");

@@ -3,7 +3,7 @@
 <html>
 <head>
 
-    <title>Add book</title>
+    <title>Edit book</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="../../../static/css/pretty.css">
     <link rel="stylesheet" href="../../../static/css/bootstrap.min.css">

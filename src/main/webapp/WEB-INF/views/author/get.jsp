@@ -3,7 +3,7 @@
 <html>
 <head>
 
-    <title>Book</title>
+    <title>Author</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="../../../static/css/pretty.css">
     <link rel="stylesheet" type="text/css" href="../../../static/css/bootstrap.min.css">
@@ -15,18 +15,14 @@
     <jsp:param name="articleId" value=""/>
 </jsp:include>
 
-    <div><c:out value="${book.name}"/></div>
-    <div><c:out value="${book.description}"/></div>
+<div><c:out value="${author.name}"/></div>
+<div><c:out value="${author.lastName}"/></div>
 
 
-    <a href="/book/edit/${book.id}">Edit book</a>
+<a href="/book/edit/${book.id}">Edit book</a>
 
-    <form method="POST" action="/book/order/">
-        <button type="submit" name="bookId" value="${book.id}">Order</button>
-    </form>
-
-    <form method="POST" action="/book/delete/">
-         <button type="submit" name="bookId" value="${book.id}">Edit</button>
-    </form>
+<form method="POST" action="/author//delete/">
+    <button type="submit" name="bookId" value="${author.id}">Edit</button>
+</form>
 </body>
 </html>
